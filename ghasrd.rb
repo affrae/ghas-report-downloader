@@ -2,14 +2,20 @@
 
 require 'octokit'
 
+# begin ... end defines code that needs to run on its own in its own context
+# rescue gives a block to execute if an error occurs during runtime
+# in this example we are fetching environment variables.
+# If they do not exist, execute the code in the rescue block and exit status 1
+# in a shell script a non-zero exit value means it is an error 
+
 begin
     GITHUB_USERID = ENV.fetch("GITHUB_USERID")
     GITHUB_PAT = ENV.fetch("GITHUB_PAT")
-  rescue KeyError
+rescue KeyError
     $stderr.puts "To run this script, please set the following environment variables:"
     $stderr.puts "- GITHUB_USERID: Your GitHub username"
     $stderr.puts "- GITHUB_PAT: A Personal Access Token (PAT) for your account"
     exit 1
-  end
+end
 
-  @client = nil
+@client = nil
