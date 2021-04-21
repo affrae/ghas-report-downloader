@@ -1,5 +1,7 @@
 #!/usr/bin/ruby
 
+require 'octokit'
+
 # Execute some shell command
 `pwd`
 
