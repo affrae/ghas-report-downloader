@@ -10,7 +10,7 @@ GitHub.com / GitHub Enterprise Cloud support only at this point in time
 
 To run this script, please set the following environment variables:
 
-- GITHUB_PAT: A Personal Access Token (PAT) for your account
+- `GITHUB_PAT`: A Personal Access Token (PAT) for your account
 
 ## To run:
 
