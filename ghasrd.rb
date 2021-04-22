@@ -1,5 +1,6 @@
 #!/usr/bin/ruby
 
+require 'terminal-table'
 require 'octokit'
 require 'optparse'
 require 'optparse/time'
@@ -16,13 +17,24 @@ class Optparse
         options = OpenStruct.new
         options.verbose = false
         options.extraVerbose = false
-        options.command = ""
 
         opt_parser = OptionParser.new do |opts|
             opts.banner = "Usage: ghasrd.rb [options]"
 
             opts.separator ""
+            opts.separator "Mandatory options:"
+
+            opts.on("-o", "--owner OWNER", "(Required) the OWNER of the repository") do |owner|
+                options.owner = owner
+            end
+
+            opts.on("-r", "--repo REPO", "(Required) a REPO to query") do |repo|
+                options.repo = repo
+            end
+
+            opts.separator ""
             opts.separator "Specific options:"
+
 
             # List the reports available
             opts.on("-l", "--list", "List available reports") do
@@ -37,14 +49,14 @@ class Optparse
             end
 
             # Run verbosely
-            opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
-                options.verbose = v
+            opts.on("-v", "Run verbosely") do
+                options.verbose = true
             end
 
              # Run verbosely
-             opts.on("--vv", "Run extra verbosely") do |vv|
+             opts.on("-V", "Run extra verbosely") do
                 options.verbose = true
-                options.extraVerbose = vv
+                options.extraVerbose = true
             end
  
             opts.separator ""
@@ -59,11 +71,13 @@ class Optparse
 
         begin
             opt_parser.parse!(args)
-        rescue OptionParser::InvalidOption => ex
-            puts "Unsupported Option"
-            exit 1
-        rescue OptionParser::MissingArgument => ex
-            puts "Missing Arguments"
+            mandatoryMissing = []
+            mandatoryMissing << "-o OWNER" if options[:owner].nil?
+            mandatoryMissing << "-r REPO" if options[:repo].nil?
+            raise OptionParser::MissingArgument.new mandatoryMissing.join(' ') if mandatoryMissing.length > 0
+        rescue OptionParser::ParseError => ex
+            puts ex
+            puts opt_parser
             exit 1
         end
         options
@@ -82,26 +96,36 @@ end  # class Optparse
 # in a shell script a non-zero exit value means it is an error 
 
 begin
-    GITHUB_USERID = ENV.fetch("GITHUB_USERID")
     GITHUB_PAT = ENV.fetch("GITHUB_PAT")
 rescue KeyError
     $stderr.puts "To run this script, please set the following environment variables:"
-    $stderr.puts "- GITHUB_USERID: Your GitHub username"
     $stderr.puts "- GITHUB_PAT: A Personal Access Token (PAT) for your account"
     exit 1
 end
 
-@client = nil
+client = Octokit::Client.new :access_token => GITHUB_PAT
 
 options = Optparse.parse(ARGV)
 if options.extraVerbose then
     pp options
+    puts "Running as @#{client.user.login}"
 end
 
 case options.command
 when "list"
-    puts "Listing available reports"
+    puts "Listing available reports for #{options.owner}/#{options.repo}"
+    client.auto_paginate = true
+    rows = []
+    theReturn = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
+    theReturn.each do |analysis|
+        rows << [analysis.id, analysis.commit_sha] 
+    end
+    table = Terminal::Table.new :headings => ['ID', 'Commit SHA'], :padding_right => 3, :rows => rows
+    puts table
+    puts ""
+    puts "To get a report issue the command\n  ghasrd.rb -o #{options.owner} -r #{options.repo} -g [ID]\nwhere [ID] is the ID of the analysis you are interested in from the table above."
+    puts "\nFor example:\n  ghasrd.rb -o #{options.owner} -r #{options.repo} -g #{rows[rows.length-1][0]}\nto get the last report on that table" if rows.length > 0
 when "get"
-    puts "Getting reports"
+    puts "Getting reports: To be implemented"
 end
 
