@@ -1,6 +1,8 @@
 # ghas-report-downloader
 
-Goal is to list reports and allow the user to select the report they want to view. Also to teach myself some Ruby.
+Goal is to list reports and allow the user to select the report they want to download. Also to teach myself some Ruby.
+
+Repoirts will be downloaded in `.sarif` format and can be viewed in a IDE's SARIF viewer plugin
 
 ## Requirements
 
