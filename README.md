@@ -58,9 +58,17 @@ to get the last report on that table
 
 ## To Be Done
 
+### Short term
+
 - [ ] Better details in the list reports function to help choose which report
-- [ ] Download the report
+- [ ] Actually implement downloading the report
 - [ ] Better docs
+
+### Mid term
+
 - [ ] Support for GitHub Enterprise Server
 - [ ] Support for GitHub AE
+
+### Long term
+
 - [ ] Interactivity to filter, choose and download multiple reports within one execution of the tool
