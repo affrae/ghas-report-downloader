@@ -75,6 +75,31 @@ where [ID] is the ID of the analysis you are interested in from the table above.
 ➜  ghas-report-downloader git:(main) ✗ 
 ```
 
+## Downloading reports
+
+If you know the ID (or multiple IDs) for an analyis (you can get a list of IDs using the `-l` option), you can use the following command to download the currrent code scanning report for that PR:
+
+``` shell
+# single
+ghasrd.rb -o [OWNER] -r [REPO] -g 5876671
+
+# multiple
+ghasrd.rb -o [OWNER] -r [REPO] -g 5876671,5876116
+
+```
+
+### Download the current report for a PR (NOTE: Under Construction)
+
+If you know the number of a PR (or multiple PRs), you can use the following command to download the currrent code scanning report for that PR:
+
+``` shell
+# single
+ghasrd.rb -o [OWNER] -r [REPO] -p 2045
+
+# multiple
+ghasrd.rb -o [OWNER] -r [REPO] -p 1257,2045
+```
+
 ## To Be Done
 
 ### Short term
