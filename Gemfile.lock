@@ -3,6 +3,8 @@ GEM
   specs:
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
+    down (5.2.0)
+      addressable (~> 2.5)
     faraday (1.4.1)
       faraday-excon (~> 1.1)
       faraday-net_http (~> 1.0)
@@ -29,6 +31,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  down
   octokit (~> 4.0)
   terminal-table
 
