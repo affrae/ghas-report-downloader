@@ -6,7 +6,6 @@ Goal is to list reports and allow the user to select the report they want to vie
 
 To run this script, please set the following environment variables:
 
-- GITHUB_USERID: Your GitHub username
 - GITHUB_PAT: A Personal Access Token (PAT) for your account
 
 To run:
