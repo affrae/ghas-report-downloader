@@ -109,7 +109,9 @@ rescue KeyError
     exit 1
 end
 
-client = Octokit::Client.new :access_token => GITHUB_PAT
+begin
+    client = Octokit::Client.new :access_token => GITHUB_PAT
+end
 
 options = Optparse.parse(ARGV)
 if options.extraVerbose then
@@ -117,35 +119,60 @@ if options.extraVerbose then
     puts "Running as @#{client.user.login}"
 end
 
-case options.command
-when "list"
-    puts "Listing available reports for #{options.owner}/#{options.repo}"
-    client.auto_paginate = true
-    rows = []
-    width = 40
-    theReturn = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
-    table = Terminal::Table.new :headings => ['ID', 'Commit SHA(7)', 'Commit date', 'Commit author', 'Message']
-    theReturn.each do |analysis|
-        commitInfo = client.get("/repos/#{options.owner}/#{options.repo}/git/commits/#{analysis.commit_sha}")
-        table.add_row [analysis.id, analysis.commit_sha[0..6], analysis.created_at, commitInfo.author.name, commitInfo.message.length < width ?  commitInfo.message : commitInfo.message[0...(width -4)] + "..."] 
-        table.add_separator
-    end
-    puts table
-    puts ""
-    puts "To get a report issue the command\n  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g [ID]\nwhere [ID] is the ID of the analysis you are interested in from the table above."
-    puts "\nFor example:\n  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g #{rows[rows.length-1][0]}\nto get the last report on that table" if rows.length > 0
-when "get"
-    puts "Getting reports..."
-    options.reportList.each do |reportID|
-        puts "  Getting SARIF report with ID #{reportID}: To be implemented"
-    end
-    puts "...done."
+begin
+    case options.command
+    when "list"
+        puts "Listing available reports for https://github.com/#{options.owner}/#{options.repo}..."
+        client.auto_paginate = true
+        rows = []
+        width = 40
+        begin
+            theReturn = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
+            table = Terminal::Table.new :headings => ['ID', 'Commit SHA(7)', 'Commit date', 'Commit author', 'Message']
+            theReturn.each do |analysis|
+                commitInfo = client.get("/repos/#{options.owner}/#{options.repo}/git/commits/#{analysis.commit_sha}")
+                table.add_row [analysis.id, analysis.commit_sha[0..6], analysis.created_at, commitInfo.author.name, commitInfo.message.length < width ?  commitInfo.message : commitInfo.message[0...(width -4)] + "..."] 
+            end
+        end    
+        puts table
+        puts ""
+        puts "To get a report issue the command\n  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g [ID]\nwhere [ID] is the ID of the analysis you are interested in from the table above."
+        puts "\nFor example:\n  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g #{rows[rows.length-1][0]}\nto get the last report on that table" if rows.length > 0
+    when "get"
+        puts "Getting reports..."
+        options.reportList.each do |reportID|
+            puts "  Getting SARIF report with ID #{reportID}: To be implemented"
+        end
+        puts "...done."
 
-when "pr"
-    puts "Getting reports for PRs..."
-    options.prList.each do |prID|
-        puts "  Getting SARIF report for PR ##{prID}: To be implemented"
+    when "pr"
+        puts "Getting reports for PRs..."
+        options.prList.each do |prID|
+            puts "  Getting SARIF report for PR ##{prID}: To be implemented"
+        end
+        puts "...done."
     end
-    puts "...done."
+
+rescue Octokit::Unauthorized => ex
+    puts "Bad Credentials - is your GITHUB_PAT ok?"
+    exit 1
+rescue Octokit::NotFound => ex
+    puts "Could not find the needed data - is https://github.com/#{options.owner}/#{options.repo} the correct repository?"
+    exit 1
+rescue Octokit::Forbidden => ex
+    puts "Code Scanning has not been enabled for https://github.com/#{options.owner}/#{options.repo}"
+    exit 1
+rescue Octokit::ServerError => ex
+    puts "It appears the service is currently not available - please try again later. You can check https://www.githubstatus.com/ for operational details"
+    exit 1
+rescue Octokit::ClientError => ex
+    puts "There is an Octokit Client Error we do not have a specific message for yet"
+    exit 1
+rescue Octokit::Error => ex
+    puts "There is a Octokit Error we do not have a specific message for yet"
+    exit 1
+rescue StandardError => ex
+    puts "There is a Standard Error we do not have a specific message for yet"
+    exit 1
 end
 
