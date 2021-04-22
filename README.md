@@ -63,3 +63,4 @@ to get the last report on that table
 - [ ] Better docs
 - [ ] Support for GitHub Enterprise Server
 - [ ] Support for GitHub AE
+- [ ] Interactivity to filter, choose and download within one execution of the tool
