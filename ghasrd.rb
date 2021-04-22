@@ -5,6 +5,9 @@ require 'octokit'
 require 'optparse'
 require 'ostruct'
 require 'pp'
+require 'json'
+require 'net/http'
+require 'uri'
 
 # Get command Line options using docs @ https://ruby-doc.org/stdlib-2.1.1/libdoc/optparse/rdoc/OptionParser.html
 
@@ -16,6 +19,7 @@ class Optparse
         options = OpenStruct.new
         options.verbose = false
         options.extraVerbose = false
+        options.APIEndpoint = "https://api.github.com"
 
         opt_parser = OptionParser.new do |opts|
             opts.banner = "Usage: #{$PROGRAM_NAME} [options]"
@@ -143,7 +147,30 @@ begin
     when "get"
         puts "Getting reports..."
         options.reportList.each do |reportID|
-            puts "  Getting SARIF report with ID #{reportID}: To be implemented"
+            puts "  Getting SARIF report with ID #{reportID}..."
+            begin
+                uri = URI.parse("#{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{reportID}")
+                request = Net::HTTP::Get.new(uri)
+                request.basic_auth("dummy", "#{GITHUB_PAT}")
+                request["Accept"] = "application/vnd.github.v3+json"
+                request["Accept"] = "application/sarif+json"
+                
+                req_options = {
+                  use_ssl: uri.scheme == "https",
+                }
+                
+                response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+                  http.request(request)
+                end
+                begin
+                    puts "    Report does not exist for #{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{reportID}"
+                    next
+                end if response.code != "200"
+                f = File.new('analysis_'+reportID+'.sarif', 'w')
+                f.write(response.body)
+                puts "    Report Downloaded to analysis_"+reportID+".sarif"
+                f.close()
+            end
         end
         puts "...done."
 
@@ -169,12 +196,15 @@ rescue Octokit::ServerError => ex
     exit 1
 rescue Octokit::ClientError => ex
     puts "There is an Octokit Client Error we do not have a specific message for yet"
+    puts ex
     exit 1
 rescue Octokit::Error => ex
     puts "There is a Octokit Error we do not have a specific message for yet"
+    puts ex
     exit 1
 rescue StandardError => ex
     puts "There is a Standard Error we do not have a specific message for yet"
+    puts ex
     exit 1
 end
 
