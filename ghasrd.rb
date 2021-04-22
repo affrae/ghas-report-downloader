@@ -120,11 +120,14 @@ when "list"
     puts "Listing available reports for #{options.owner}/#{options.repo}"
     client.auto_paginate = true
     rows = []
+    width = 40
     theReturn = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
+    table = Terminal::Table.new :headings => ['ID', 'Commit SHA(7)', 'Commit date', 'Commit author', 'Message']
     theReturn.each do |analysis|
-        rows << [analysis.id, analysis.commit_sha[0..6]] 
+        commitInfo = client.get("/repos/#{options.owner}/#{options.repo}/git/commits/#{analysis.commit_sha}")
+        table.add_row [analysis.id, analysis.commit_sha[0..6], analysis.created_at, commitInfo.author.name, commitInfo.message[0...39]] 
+        table.add_separator
     end
-    table = Terminal::Table.new :headings => ['ID', 'Commit SHA(7)', 'Commit date', 'Commit author'], :padding_right => 3, :rows => rows
     puts table
     puts ""
     puts "To get a report issue the command\n  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g [ID]\nwhere [ID] is the ID of the analysis you are interested in from the table above."
