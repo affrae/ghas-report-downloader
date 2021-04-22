@@ -18,7 +18,7 @@ class Optparse
         options.extraVerbose = false
 
         opt_parser = OptionParser.new do |opts|
-            opts.banner = "Usage: ghasrd.rb [options]"
+            opts.banner = "Usage: #{$PROGRAM_NAME} [options]"
 
             opts.separator ""
             opts.separator "Mandatory options:"
@@ -40,9 +40,14 @@ class Optparse
                 options.command = "list"
             end
 
-            # get or grab one or more reports
+            # get or grab one or more PR reports
 
-            opts.on("-g x,y,z", "--get x,y,z", "--grab x,y,z", Array, "Get one or more reports by the Analysis ID.", "For any ID that is a string consisting of #[0-9] (eg #1653),", "then the tool will download the SARIF report", "for the most recent commit on the source branch for the PR") do |reportList|
+            opts.on("-p x,y,z", "--pr x,y,z", Array, "Get reports for the most recent commit on the source branch for each of the listed Pull Request numbers") do |prList|
+                options.prList = prList
+                options.command = "pr"
+            end
+
+            opts.on("-g x,y,z", "--get x,y,z", "--grab x,y,z", Array, "Get one or more reports by the Analysis ID.") do |reportList|
                 options.reportList = reportList
                 options.command = "get"
             end
@@ -122,16 +127,18 @@ when "list"
     table = Terminal::Table.new :headings => ['ID', 'Commit SHA(7)'], :padding_right => 3, :rows => rows
     puts table
     puts ""
-    puts "To get a report issue the command\n  ghasrd.rb -o #{options.owner} -r #{options.repo} -g [ID]\nwhere [ID] is the ID of the analysis you are interested in from the table above."
-    puts "\nFor example:\n  ghasrd.rb -o #{options.owner} -r #{options.repo} -g #{rows[rows.length-1][0]}\nto get the last report on that table" if rows.length > 0
+    puts "To get a report issue the command\n  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g [ID]\nwhere [ID] is the ID of the analysis you are interested in from the table above."
+    puts "\nFor example:\n  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g #{rows[rows.length-1][0]}\nto get the last report on that table" if rows.length > 0
 when "get"
     puts "Getting reports"
     options.reportList.each do |reportID|
-        if reportID[0] == "#" then
-            puts "  Getting SARIF report for PR #{reportID}: To be implemented"
-        else
-            puts "  Getting SARIF report with ID #{reportID}: To be implemented"
-        end
+        puts "  Getting SARIF report with ID #{reportID}: To be implemented"
+    end
+
+when "pr"
+    puts "Getting reports for PRs"
+    options.prList.each do |prID|
+        puts "  Getting SARIF report for PR ##{prID}: To be implemented"
     end
 end
 
