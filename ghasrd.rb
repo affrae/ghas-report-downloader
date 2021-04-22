@@ -45,11 +45,13 @@ class Optparse
             # get or grab one or more PR reports
 
             opts.on("-p x,y,z", "--pr x,y,z", Array, "Get reports for the most recent commit on the source branch for each of the listed Pull Request numbers") do |prList|
-                options.prList = prList
+                raise OptionParser::InvalidArgument.new "Pull Request Item lists may only contain numbers. '#{prList.join(',')}' fails this test!" if !prList.all? {|i| i.match('^([0-9])*$') }
+                options.prList = prList if 
                 options.command = "pr"
             end
 
             opts.on("-g x,y,z", "--get x,y,z", "--grab x,y,z", Array, "Get one or more reports by the Analysis ID.") do |reportList|
+                raise OptionParser::InvalidArgument.new "Analysis ID lists may only contain numbers. '#{reportList.join(',')}' fails this test!" if !reportList.all? {|i| i.match('^([0-9])*$') }
                 options.reportList = reportList
                 options.command = "get"
             end

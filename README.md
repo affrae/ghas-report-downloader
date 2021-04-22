@@ -80,7 +80,7 @@ where [ID] is the ID of the analysis you are interested in from the table above.
 ### Short term
 
 - [x] Error Checking and Handling
-- [ ] User Input Data checking and sanitization
+- [x] User Input Data checking and sanitization
 - [x] Better details in the list reports function to help choose which report
 - [ ] Actually implement downloading the report
 - [ ] Option to download the report for the most recent commit to a PR source branch
