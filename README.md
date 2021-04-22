@@ -14,13 +14,13 @@ To run this script, please set the following environment variables:
 
 ## To run:
 
-``` shell
+``` zsh
 bundle install
 ./ghasrd.rb
 ```
 ### Listing available reports
 
-``` shell
+``` zsh
 ➜  ghas-report-downloader git:(main) ✗ ./ghasrd.rb -l -o affrae -r quickjavahelloworldmultimodule
 Listing available reports for affrae/quickjavahelloworldmultimodule
 +---------+------------------------------------------+
