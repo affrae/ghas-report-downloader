@@ -3,7 +3,6 @@
 require 'terminal-table'
 require 'octokit'
 require 'optparse'
-require 'optparse/time'
 require 'ostruct'
 require 'pp'
 
