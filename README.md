@@ -4,6 +4,8 @@ Goal is to list reports and allow the user to select the report they want to dow
 
 Reports will be downloaded in `.sarif` format and can be viewed in a IDE's SARIF viewer plugin
 
+GitHub.com / GitHub Enterprse Cloud support only at this point in time
+
 ## Requirements
 
 To run this script, please set the following environment variables:
@@ -56,6 +58,8 @@ to get the last report on that table
 
 ## To Be Done
 
-- Better details in the list reports function to help choose which report
-- Download the report
-- Better docs
+- [ ] Better details in the list reports function to help choose which report
+- [ ] Download the report
+- [ ] Better docs
+- [ ] Support for GitHub Enterprise Server
+- [ ] Support for GitHub AE
