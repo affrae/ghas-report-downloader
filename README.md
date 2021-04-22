@@ -4,7 +4,7 @@ Goal is to list reports and allow the user to select the report they want to dow
 
 Reports will be downloaded in `.sarif` format and can be viewed in a IDE's SARIF viewer plugin
 
-GitHub.com / GitHub Enterprse Cloud support only at this point in time
+GitHub.com / GitHub Enterprise Cloud support only at this point in time
 
 ## Requirements
 
