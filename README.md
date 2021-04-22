@@ -57,3 +57,4 @@ to get the last report on that table
 
 - Better details in the list reports function to help choose which report
 - Download the report
+- Better docs
