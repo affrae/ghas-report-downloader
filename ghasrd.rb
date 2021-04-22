@@ -42,7 +42,7 @@ class Optparse
 
             # get or grab one or more reports
 
-            opts.on("-g x,y,z", "--get x,y,z", "--grab x,y,z", Array, "Get one or more reports by analysis_id") do |reportList|
+            opts.on("-g x,y,z", "--get x,y,z", "--grab x,y,z", Array, "Get one or more reports by the Analysis ID.", "If an ID is a string consisting of #[0-9] (eg #1653),", "then the tool will download the SARIF report", "for the most recent commit on the source branch for the PR") do |reportList|
                 options.reportList = reportList
                 options.command = "get"
             end
@@ -119,7 +119,7 @@ when "list"
     theReturn.each do |analysis|
         rows << [analysis.id, analysis.commit_sha[0..6]] 
     end
-    table = Terminal::Table.new :headings => ['ID', 'Commit SHA'], :padding_right => 3, :rows => rows
+    table = Terminal::Table.new :headings => ['ID', 'Commit SHA(7)'], :padding_right => 3, :rows => rows
     puts table
     puts ""
     puts "To get a report issue the command\n  ghasrd.rb -o #{options.owner} -r #{options.repo} -g [ID]\nwhere [ID] is the ID of the analysis you are interested in from the table above."
