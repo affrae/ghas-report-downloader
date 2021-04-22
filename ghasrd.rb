@@ -15,7 +15,8 @@ class Optparse
       # We set default values here.
       options = OpenStruct.new
       options.verbose = false
-  
+      options.command = "list"
+
       opt_parser = OptionParser.new do |opts|
         opts.banner = "Usage: ghasrd.rb [options]"
   
@@ -32,7 +33,8 @@ class Optparse
 
         opts.on("-g x,y,z", "--get x,y,z", "--grab x,y,z", Array, "Get one or more reports by analysis_id") do |reportList|
            options.reportList = reportList
-        end
+           options.command = "get"
+       end
   
         # Run verbosely
         opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
