@@ -42,7 +42,7 @@ class Optparse
 
             # get or grab one or more reports
 
-            opts.on("-g x,y,z", "--get x,y,z", "--grab x,y,z", Array, "Get one or more reports by the Analysis ID.", "If an ID is a string consisting of #[0-9] (eg #1653),", "then the tool will download the SARIF report", "for the most recent commit on the source branch for the PR") do |reportList|
+            opts.on("-g x,y,z", "--get x,y,z", "--grab x,y,z", Array, "Get one or more reports by the Analysis ID.", "For any ID that is a string consisting of #[0-9] (eg #1653),", "then the tool will download the SARIF report", "for the most recent commit on the source branch for the PR") do |reportList|
                 options.reportList = reportList
                 options.command = "get"
             end
@@ -125,6 +125,13 @@ when "list"
     puts "To get a report issue the command\n  ghasrd.rb -o #{options.owner} -r #{options.repo} -g [ID]\nwhere [ID] is the ID of the analysis you are interested in from the table above."
     puts "\nFor example:\n  ghasrd.rb -o #{options.owner} -r #{options.repo} -g #{rows[rows.length-1][0]}\nto get the last report on that table" if rows.length > 0
 when "get"
-    puts "Getting reports: To be implemented"
+    puts "Getting reports"
+    options.reportList.each do |reportID|
+        if reportID[0] == "#" then
+            puts "  Getting SARIF report for PR #{reportID}: To be implemented"
+        else
+            puts "  Getting SARIF report with ID #{reportID}: To be implemented"
+        end
+    end
 end
 
