@@ -117,7 +117,7 @@ when "list"
     rows = []
     theReturn = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
     theReturn.each do |analysis|
-        rows << [analysis.id, analysis.commit_sha] 
+        rows << [analysis.id, analysis.commit_sha[0..6]] 
     end
     table = Terminal::Table.new :headings => ['ID', 'Commit SHA'], :padding_right => 3, :rows => rows
     puts table
