@@ -11,52 +11,66 @@ require 'pp'
 class Optparse
 
     def self.parse(args)
-      # The options specified on the command line will be collected in *options*.
-      # We set default values here.
-      options = OpenStruct.new
-      options.verbose = false
-      options.command = "list"
+        # The options specified on the command line will be collected in *options*.
+        # We set default values here.
+        options = OpenStruct.new
+        options.verbose = false
+        options.extraVerbose = false
+        options.command = ""
 
-      opt_parser = OptionParser.new do |opts|
-        opts.banner = "Usage: ghasrd.rb [options]"
-  
-        opts.separator ""
-        opts.separator "Specific options:"
-  
-        # List the reports available
-        opts.on("-l", "--list",
-                "List the reports avilable") do
-          options.command = "list"
+        opt_parser = OptionParser.new do |opts|
+            opts.banner = "Usage: ghasrd.rb [options]"
+
+            opts.separator ""
+            opts.separator "Specific options:"
+
+            # List the reports available
+            opts.on("-l", "--list", "List available reports") do
+                options.command = "list"
+            end
+
+            # get or grab one or more reports
+
+            opts.on("-g x,y,z", "--get x,y,z", "--grab x,y,z", Array, "Get one or more reports by analysis_id") do |reportList|
+                options.reportList = reportList
+                options.command = "get"
+            end
+
+            # Run verbosely
+            opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
+                options.verbose = v
+            end
+
+             # Run verbosely
+             opts.on("--vv", "Run extra verbosely") do |vv|
+                options.verbose = true
+                options.extraVerbose = vv
+            end
+ 
+            opts.separator ""
+            opts.separator "Common options:"
+
+            # No argument, shows at tail.  This will print an options summary.
+            opts.on_tail("-h", "--help", "Show this message") do
+                puts opts
+                exit
+            end
         end
+
+        begin
+            opt_parser.parse!(args)
+        rescue OptionParser::InvalidOption => ex
+            puts "Unsupported Option"
+            exit 1
+        rescue OptionParser::MissingArgument => ex
+            puts "Missing Arguments"
+            exit 1
+        end
+        options
         
-        # get or grab one or more reports
-
-        opts.on("-g x,y,z", "--get x,y,z", "--grab x,y,z", Array, "Get one or more reports by analysis_id") do |reportList|
-           options.reportList = reportList
-           options.command = "get"
-       end
-  
-        # Run verbosely
-        opts.on("-v", "--[no-]verbose", "Run verbosely") do |v|
-           options.verbose = v
-        end
-  
-        opts.separator ""
-        opts.separator "Common options:"
-  
-        # No argument, shows at tail.  This will print an options summary.
-        # Try it and see!
-        opts.on_tail("-h", "--help", "Show this message") do
-          puts opts
-          exit
-        end
-      end
-  
-      opt_parser.parse!(args)
-      options
     end  # parse()
-  
-  end  # class Optparse
+
+end  # class Optparse
   
 # begin ... end defines code that needs to run on its own in its own context
 # rescue gives a block to execute if an error occurs during runtime.
@@ -77,9 +91,17 @@ rescue KeyError
     exit 1
 end
 
+@client = nil
+
 options = Optparse.parse(ARGV)
-if options.verbose then
+if options.extraVerbose then
     pp options
 end
 
-@client = nil
+case options.command
+when "list"
+    puts "Listing available reports"
+when "get"
+    puts "Getting reports"
+end
+
