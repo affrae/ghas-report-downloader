@@ -51,6 +51,7 @@ where [ID] is the ID of the analysis you are interested in from the table above.
 For example:
   ghasrd.rb -o affrae -r quickjavahelloworldmultimodule -g 5876116
 to get the last report on that table 
+➜  ghas-report-downloader git:(main) ✗
 ``` 
 
 ## To Be Done
