@@ -14,7 +14,7 @@ To run this script, please set the following environment variables:
 
 ``` shell
 bundle install
-./ghasrb.rb
+./ghasrd.rb
 ```
 ## Listing available reports
 
