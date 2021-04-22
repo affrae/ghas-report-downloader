@@ -46,7 +46,7 @@ class Optparse
 
             opts.on("-p x,y,z", "--pr x,y,z", Array, "Get reports for the most recent commit on the source branch for each of the listed Pull Request numbers") do |prList|
                 raise OptionParser::InvalidArgument.new "Pull Request Item lists may only contain numbers. '#{prList.join(',')}' fails this test!" if !prList.all? {|i| i.match('^([0-9])*$') }
-                options.prList = prList if 
+                options.prList = prList
                 options.command = "pr"
             end
 
