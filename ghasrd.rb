@@ -125,7 +125,7 @@ when "list"
     table = Terminal::Table.new :headings => ['ID', 'Commit SHA(7)', 'Commit date', 'Commit author', 'Message']
     theReturn.each do |analysis|
         commitInfo = client.get("/repos/#{options.owner}/#{options.repo}/git/commits/#{analysis.commit_sha}")
-        table.add_row [analysis.id, analysis.commit_sha[0..6], analysis.created_at, commitInfo.author.name, commitInfo.message[0...39]] 
+        table.add_row [analysis.id, analysis.commit_sha[0..6], analysis.created_at, commitInfo.author.name, commitInfo.message.length < width ?  commitInfo.message : commitInfo.message[0...(width -4)] + "..."] 
         table.add_separator
     end
     puts table
