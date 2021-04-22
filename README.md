@@ -2,24 +2,25 @@
 
 Goal is to list reports and allow the user to select the report they want to download. Also to teach myself some Ruby.
 
-
 Reports will be downloaded in `.sarif` format and can be viewed in a IDE's SARIF viewer plugin
 
 GitHub.com / GitHub Enterprise Cloud support only at this point in time
 
 Code scanning is available for all public repositories and for private repositories owned by organizations where GitHub Advanced Security is enabled. For more information, see "[About GitHub Advanced Security](https://docs.github.com/en/github/getting-started-with-github/about-github-advanced-security)."
+
 ## Requirements
 
 To run this script, please set the following environment variables:
 
 - `GITHUB_PAT`: A Personal Access Token (PAT) for your account
 
-## To run:
+## To run
 
 ``` zsh
 bundle install
 ./ghasrd.rb
 ```
+
 ### Listing available reports
 
 ``` zsh
@@ -56,7 +57,7 @@ For example:
   ghasrd.rb -o affrae -r quickjavahelloworldmultimodule -g 5876116
 to get the last report on that table 
 ➜  ghas-report-downloader git:(main) ✗
-``` 
+```
 
 ## To Be Done
 
