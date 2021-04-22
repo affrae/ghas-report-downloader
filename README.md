@@ -88,6 +88,7 @@ where [ID] is the ID of the analysis you are interested in from the table above.
 
 ### Mid term
 
+- [ ] Verbose `-v` and `-V` levels sorted out
 - [ ] Support for GitHub Enterprise Server
 - [ ] Support for GitHub AE
 
