@@ -82,8 +82,8 @@ where [ID] is the ID of the analysis you are interested in from the table above.
 - [x] Error Checking and Handling
 - [x] User Input Data checking and sanitization
 - [x] Better details in the list reports function to help choose which report
-- [ ] Actually implement downloading the report
-- [ ] Option to download the report for the most recent commit to a PR source branch
+- [x] Actually implement downloading the report(s) using the `-g` option
+- [ ] Download the report for the most recent commit to a Pull Request source branch for one or more Pull Requests
 - [ ] Better docs
 
 ### Mid term
