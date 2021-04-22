@@ -124,21 +124,23 @@ when "list"
     theReturn.each do |analysis|
         rows << [analysis.id, analysis.commit_sha[0..6]] 
     end
-    table = Terminal::Table.new :headings => ['ID', 'Commit SHA(7)'], :padding_right => 3, :rows => rows
+    table = Terminal::Table.new :headings => ['ID', 'Commit SHA(7)', 'Commit date', 'Commit author'], :padding_right => 3, :rows => rows
     puts table
     puts ""
     puts "To get a report issue the command\n  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g [ID]\nwhere [ID] is the ID of the analysis you are interested in from the table above."
     puts "\nFor example:\n  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g #{rows[rows.length-1][0]}\nto get the last report on that table" if rows.length > 0
 when "get"
-    puts "Getting reports"
+    puts "Getting reports..."
     options.reportList.each do |reportID|
         puts "  Getting SARIF report with ID #{reportID}: To be implemented"
     end
+    puts "...done."
 
 when "pr"
-    puts "Getting reports for PRs"
+    puts "Getting reports for PRs..."
     options.prList.each do |prID|
         puts "  Getting SARIF report for PR ##{prID}: To be implemented"
     end
+    puts "...done."
 end
 
