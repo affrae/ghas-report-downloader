@@ -64,6 +64,7 @@ to get the last report on that table
 
 - [ ] Better details in the list reports function to help choose which report
 - [ ] Actually implement downloading the report
+- [ ] Option to download the report for the most recent commit to a PR source branch
 - [ ] Better docs
 
 ### Mid term
