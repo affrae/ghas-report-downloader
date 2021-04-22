@@ -12,7 +12,7 @@ Code scanning is available for all public repositories and for private repositor
 
 To run this script, please set the following environment variables:
 
-- `GITHUB_PAT`: A Personal Access Token (PAT) for your account (eg `export GITHUB_PAT=ghp_ÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆÆ`)
+- `GITHUB_PAT`: A Personal Access Token (PAT) for your account (eg `export GITHUB_PAT=ghp_abc123`)
 
 ## To run
 
