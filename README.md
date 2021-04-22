@@ -2,7 +2,7 @@
 
 Goal is to list reports and allow the user to select the report they want to download. Also to teach myself some Ruby.
 
-Repoirts will be downloaded in `.sarif` format and can be viewed in a IDE's SARIF viewer plugin
+Reports will be downloaded in `.sarif` format and can be viewed in a IDE's SARIF viewer plugin
 
 ## Requirements
 
@@ -16,7 +16,7 @@ To run this script, please set the following environment variables:
 bundle install
 ./ghasrd.rb
 ```
-## Listing available reports
+### Listing available reports
 
 ``` shell
 ➜  ghas-report-downloader git:(main) ✗ ./ghasrd.rb -l -o affrae -r quickjavahelloworldmultimodule
@@ -52,3 +52,8 @@ For example:
   ghasrd.rb -o affrae -r quickjavahelloworldmultimodule -g 5876116
 to get the last report on that table 
 ``` 
+
+## To Be Done
+
+- Better details in the list reports function to help choose which report
+- Download the report
