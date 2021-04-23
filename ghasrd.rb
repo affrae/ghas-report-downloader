@@ -103,7 +103,6 @@ class Optparse
       exit 1
     end
     options
-
   end  # parse()
 
 end  # class Optparse
