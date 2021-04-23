@@ -11,7 +11,9 @@ require 'uri'
 
 # Get command Line options using docs @ https://ruby-doc.org/stdlib-3.0.1/libdoc/optparse/rdoc/OptionParser.html
 
+# Parses the command line options
 class Optparse
+  # the parse functionality for this class
   def self.parse(args)
     # The options specified on the command line will be collected in *options*.
     # We set default values here.
