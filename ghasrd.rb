@@ -236,7 +236,7 @@ begin
                 next
             end if requiredAnalyses.length > 0
             puts "  No analyses found for SHA #{prInfo.head.sha} for PR ##{prID} in https://github.com/#{options.owner}/#{options.repo}"
-        rescue Octokit::NotFound => ex
+        rescue Octokit::NotFound
             puts "  Could not find the needed data - is https://github.com/#{options.owner}/#{options.repo} the correct repository, or do you have the correct PR number?"
             next
        end
