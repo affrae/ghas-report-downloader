@@ -167,7 +167,7 @@ begin
 
         analyses.each do |analysis|
           commit_info = client.get("/repos/#{options.owner}/#{options.repo}/git/commits/#{analysis.commit_sha}")
-          table.add_row [analysis.id, analysis.tool.name, analysis.commit_sha[0..6], analysis.created_at, commit_info.author.name, commit_info.message.length < width ? commit_info.message : commit_info.message[0...(width - 4)] + '...']
+          table.add_row [analysis.id, analysis.tool.name, analysis.commit_sha[0..6], analysis.created_at, commit_info.author.name, commit_info.message.length < width ? commit_info.message : "#{commit_info.message[0...(width - 4)]}..."]
         end
       end
     }
@@ -200,9 +200,9 @@ begin
           puts "  Report does not exist for #{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{report_id}"
           next
         end if response.code != '200'
-        f = File.new('analysis_' + report_id + '.sarif', 'w')
+        f = File.new("analysis_#{report_id}.sarif", 'w')
         f.write(response.body)
-        puts '  Report Downloaded to analysis_' + report_id + '.sarif'
+        puts "  Report Downloaded to analysis_#{report_id}.sarif"
         f.close
       end
     end
@@ -238,7 +238,7 @@ begin
              end if response.code != '200'
              puts "  Opening File pr_#{pr_id}_analysis_#{analysis.id}.sarif for writing"
              # f = File.new('pr_'+pr_id+'_analysis_'+analysis.id+'.sarif', 'w')
-             f = File.new('pr_' + pr_id + '_analysis_' + analysis.id.to_s + '.sarif', 'w')
+             f = File.new("pr_#{pr_id}_analysis_#{analysis.id.to_s}.sarif", 'w')
              # f = File.new('test.sarif', 'w')
              f.write(response.body)
              f.close
