@@ -97,6 +97,23 @@ class Optparse
     end  # parse()
 
 end  # class Optparse
+
+def show_wait_spinner(fps=30)
+    chars = %w[| / - \\]
+    delay = 1.0/fps
+    iter = 0
+    spinner = Thread.new do
+      while iter do  # Keep spinning until told otherwise
+        print chars[(iter+=1) % chars.length]
+        sleep delay
+        print "\b"
+      end
+    end
+    yield.tap{       # After yielding to the block, save the return value
+      iter = false   # Tell the thread to exit, cleaning up after itself…
+      spinner.join   # …and wait for it to do so.
+    }                # Use the block's return value as the method's
+end
   
 # begin ... end defines code that needs to run on its own in its own context
 # rescue gives a block to execute if an error occurs during runtime.
@@ -132,16 +149,18 @@ begin
         puts "Listing available reports for https://github.com/#{options.owner}/#{options.repo}..."
         rows = []
         width = 40
-        begin
-            analyses = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
-            table = Terminal::Table.new :headings => ['ID', 'Tool','Commit SHA(7)', 'Commit date', 'Commit author', 'Commit message']
-            table.style = {:all_separators => true}
-
-            analyses.each do |analysis|
-                commitInfo = client.get("/repos/#{options.owner}/#{options.repo}/git/commits/#{analysis.commit_sha}")
-                table.add_row [analysis.id, analysis.tool.name, analysis.commit_sha[0..6], analysis.created_at, commitInfo.author.name, commitInfo.message.length < width ?  commitInfo.message : commitInfo.message[0...(width -4)] + "..."] 
+        table = Terminal::Table.new :headings => ['ID', 'Tool','Commit SHA(7)', 'Commit date', 'Commit author', 'Commit message']
+        table.style = {:all_separators => true}
+        show_wait_spinner{
+            begin
+                analyses = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
+    
+                analyses.each do |analysis|
+                    commitInfo = client.get("/repos/#{options.owner}/#{options.repo}/git/commits/#{analysis.commit_sha}")
+                    table.add_row [analysis.id, analysis.tool.name, analysis.commit_sha[0..6], analysis.created_at, commitInfo.author.name, commitInfo.message.length < width ?  commitInfo.message : commitInfo.message[0...(width -4)] + "..."] 
+                end
             end
-        end    
+        }           
         puts table
         puts ""
         puts "To get a report issue the command\n  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g [ID]\nwhere [ID] is the ID of the analysis you are interested in from the table above."
