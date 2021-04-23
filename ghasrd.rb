@@ -105,16 +105,16 @@ class Optparse
       exit 1
     end
     options
-  end  # parse()
+  end # parse()
 
-end  # class Optparse
+end # class Optparse
 
 def show_wait_spinner(fps=30)
   chars = %w[| / - \\]
   delay = 1.0 / fps
   iter = 0
   spinner = Thread.new do
-    while iter do  # Keep spinning until told otherwise
+    while iter do # Keep spinning until told otherwise
       print chars[(iter += 1) % chars.length]
       sleep delay
       print "\b"
