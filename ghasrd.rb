@@ -172,7 +172,7 @@ begin
           analysis.created_at,
           commit_info.author.name,
           commit_info.message.length < width ? commit_info.message : "#{commit_info.message[0...(width - 4)]}..."
-]
+        ]
       end
     end
     puts table
