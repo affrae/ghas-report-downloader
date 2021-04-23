@@ -32,7 +32,7 @@ class Optparse
 
       opts.on('-o', '--owner OWNER', '(Required) the OWNER of the repository') do |owner|
         unless owner.match('^([a-z0-9])(?!.*--)([a-z0-9-])*([a-z0-9])$')
-          raise OptionParser::InvalidArgument, 
+          raise OptionParser::InvalidArgument,
                 "OWNER may only contain alphanumeric characters or single hyphens, and cannot begin or end with a hyphen. '#{owner}' fails this test!"
         end
 
@@ -41,7 +41,7 @@ class Optparse
 
       opts.on('-r', '--repo REPO', '(Required) a REPO to query') do |repo|
         unless repo.match('^[a-z0-9-]*$')
-          raise OptionParser::InvalidArgument, 
+          raise OptionParser::InvalidArgument,
                 "REPO may only contain alphanumeric characters or hyphens. '#{repo}' fails this test!"
         end
 
@@ -58,10 +58,10 @@ class Optparse
 
       # get or grab one or more PR reports
 
-      opts.on('-p x,y,z', '--pr x,y,z', Array, 
+      opts.on('-p x,y,z', '--pr x,y,z', Array,
               'Get reports for the most recent commit on the source branch for each of the listed Pull Request numbers') do |pr_list|
         unless pr_list.all? { |i| i.match('^([0-9])*$') }
-          raise OptionParser::InvalidArgument, 
+          raise OptionParser::InvalidArgument,
                 "Pull Request Item lists may only contain numbers. '#{pr_list.join(',')}' fails this test!"
         end
 
@@ -71,10 +71,10 @@ class Optparse
 
       # get or grab one or more reports listed by ID
 
-      opts.on('-g x,y,z', '--get x,y,z', '--grab x,y,z', Array, 
+      opts.on('-g x,y,z', '--get x,y,z', '--grab x,y,z', Array,
               'Get one or more reports by the Analysis ID.') do |report_list|
         unless report_list.all? { |i| i.match('^([0-9])*$') }
-          raise OptionParser::InvalidArgument, 
+          raise OptionParser::InvalidArgument,
                 "Analysis ID lists may only contain numbers. '#{report_list.join(',')}' fails this test!"
         end
 
@@ -168,7 +168,7 @@ begin
     puts "Listing available reports for https://github.com/#{options.owner}/#{options.repo}..."
     rows = []
     width = 40
-    table = Terminal::Table.new headings: ['ID', 'Tool', 'Commit SHA(7)', 'Commit date', 'Commit author', 
+    table = Terminal::Table.new headings: ['ID', 'Tool', 'Commit SHA(7)', 'Commit date', 'Commit author',
 'Commit message']
     table.style = { all_separators: true }
     show_wait_spinner do
