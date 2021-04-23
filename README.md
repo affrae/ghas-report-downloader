@@ -114,7 +114,7 @@ ghasrd.rb -o [OWNER] -r [REPO] -p 1257,2045
 
 - [ ] Verbose `-v` and `-V` levels sorted out (right now it is a little noisy)
 - [ ] Support for GitHub Enterprise Server
-- [ ] Support for GitHub AE
+- [ ] Support for GitHub Æ
 
 ### Long term
 
