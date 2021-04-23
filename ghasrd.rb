@@ -162,13 +162,17 @@ begin
     table = Terminal::Table.new headings: ['ID', 'Tool','Commit SHA(7)', 'Commit date', 'Commit author', 'Commit message']
     table.style = {all_separators: true}
     show_wait_spinner{
-      begin
-        analyses = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
+      analyses = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
 
-        analyses.each do |analysis|
-          commit_info = client.get("/repos/#{options.owner}/#{options.repo}/git/commits/#{analysis.commit_sha}")
-          table.add_row [analysis.id, analysis.tool.name, analysis.commit_sha[0..6], analysis.created_at, commit_info.author.name, commit_info.message.length < width ? commit_info.message : "#{commit_info.message[0...(width - 4)]}..."]
-        end
+      analyses.each do |analysis|
+        commit_info = client.get("/repos/#{options.owner}/#{options.repo}/git/commits/#{analysis.commit_sha}")
+        table.add_row [
+          analysis.id,
+          analysis.tool.name,
+          analysis.commit_sha[0..6],
+          analysis.created_at,
+          commit_info.author.name,
+          commit_info.message.length < width ? commit_info.message : "#{commit_info.message[0...(width - 4)]}..."]
       end
     }
     puts table
@@ -208,52 +212,42 @@ begin
 
   when 'pr'
     options.pr_list.each do |pr_id|
-       puts "Getting SARIF report(s) for PR ##{pr_id} in https://github.com/#{options.owner}/#{options.repo}:"
-       pr_info = client.get("/repos/#{options.owner}/#{options.repo}/pulls/#{pr_id}")
-       puts "  HEAD is #{pr_info.head.sha}"
-       analyses = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
-       required_analyses = analyses.select { |analysis| analysis.commit_sha == pr_info.head.sha }
-       unless required_analyses.empty?
-         begin
-           required_analyses.each do |analysis|
-             puts "  Found Report #{analysis.id}"
-             begin
-               uri = URI.parse("#{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{analysis.id}")
-               request = Net::HTTP::Get.new(uri)
-               request.basic_auth('dummy', GITHUB_PAT.to_s)
-               request['Accept'] = 'application/vnd.github.v3+json'
-               request['Accept'] = 'application/sarif+json'
+      puts "Getting SARIF report(s) for PR ##{pr_id} in https://github.com/#{options.owner}/#{options.repo}:"
+      pr_info = client.get("/repos/#{options.owner}/#{options.repo}/pulls/#{pr_id}")
+      puts "  HEAD is #{pr_info.head.sha}"
+      analyses = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
+      required_analyses = analyses.select { |analysis| analysis.commit_sha == pr_info.head.sha }
+      unless required_analyses.empty?
+        required_analyses.each do |analysis|
+          puts "  Found Report #{analysis.id}"
+          uri = URI.parse("#{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{analysis.id}")
+          request = Net::HTTP::Get.new(uri)
+          request.basic_auth('dummy', GITHUB_PAT.to_s)
+          request['Accept'] = 'application/vnd.github.v3+json'
+          request['Accept'] = 'application/sarif+json'
 
-               req_options = {
-                 use_ssl: uri.scheme == 'https'
-               }
-
-               response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
-                 http.request(request)
-               end
-               if response.code != '200'
-                 begin
-                   puts "  Report does not exist for #{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{analysis.id}"
-                   next
-                 end
-               end
-               puts "  Opening File pr_#{pr_id}_analysis_#{analysis.id}.sarif for writing"
-               # f = File.new('pr_'+pr_id+'_analysis_'+analysis.id+'.sarif', 'w')
-               f = File.new("pr_#{pr_id}_analysis_#{analysis.id}.sarif", 'w')
-               # f = File.new('test.sarif', 'w')
-               f.write(response.body)
-               f.close
-               puts "  Report Downloaded to pr_#{pr_id}_analysis_#{analysis.id}.sarif"
-             end
-           end
-           next
-         end
-       end
-       puts "  No analyses found for SHA #{pr_info.head.sha} for PR ##{pr_id} in https://github.com/#{options.owner}/#{options.repo}"
+          req_options = {
+            use_ssl: uri.scheme == 'https'
+          }
+          response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+            http.request(request)
+          end
+          if response.code != '200'
+            puts "  Report does not exist for #{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{analysis.id}"
+            next
+          end
+          puts "  Opening File pr_#{pr_id}_analysis_#{analysis.id}.sarif for writing"
+          f = File.new("pr_#{pr_id}_analysis_#{analysis.id}.sarif", 'w')
+          f.write(response.body)
+          f.close
+          puts "  Report Downloaded to pr_#{pr_id}_analysis_#{analysis.id}.sarif"
+        end
+      end
+      puts "  No analyses found for SHA #{pr_info.head.sha} for PR ##{pr_id} in https://github.com/#{options.owner}/#{options.repo}" unless !required_analyses.empty?
     rescue Octokit::NotFound
       puts "  Could not find the needed data - is https://github.com/#{options.owner}/#{options.repo} the correct repository, or do you have the correct PR number?"
       next
-     end
+    end
   end
 
 rescue Octokit::Unauthorized
