@@ -15,8 +15,10 @@ require 'uri'
 class Optparse
   # the parse functionality for this class
   def self.parse(args)
+
     # The options specified on the command line will be collected in *options*.
     # We set default values here.
+
     options = OpenStruct.new
     options.verbose = false
     options.extraVerbose = false
@@ -62,6 +64,8 @@ class Optparse
         options.pr_list = pr_list
         options.command = 'pr'
       end
+
+      # get or grab one or more reports listed by ID
 
       opts.on('-g x,y,z', '--get x,y,z', '--grab x,y,z', Array, 'Get one or more reports by the Analysis ID.') do |report_list|
         unless report_list.all? { |i| i.match('^([0-9])*$') }
