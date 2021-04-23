@@ -117,6 +117,7 @@ end
 
 begin
     client = Octokit::Client.new :access_token => GITHUB_PAT
+    client.auto_paginate = true
 end
 
 options = Optparse.parse(ARGV)
@@ -129,13 +130,12 @@ begin
     case options.command
     when "list"
         puts "Listing available reports for https://github.com/#{options.owner}/#{options.repo}..."
-        client.auto_paginate = true
         rows = []
         width = 40
         begin
-            theReturn = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
+            analyses = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
             table = Terminal::Table.new :headings => ['ID', 'Commit SHA(7)', 'Commit date', 'Commit author', 'Message']
-            theReturn.each do |analysis|
+            analyses.each do |analysis|
                 commitInfo = client.get("/repos/#{options.owner}/#{options.repo}/git/commits/#{analysis.commit_sha}")
                 table.add_row [analysis.id, analysis.commit_sha[0..6], analysis.created_at, commitInfo.author.name, commitInfo.message.length < width ?  commitInfo.message : commitInfo.message[0...(width -4)] + "..."] 
             end
@@ -175,22 +175,56 @@ begin
         puts "...done."
 
     when "pr"
-        puts "Getting reports for PRs..."
         options.prList.each do |prID|
-            puts "  Getting SARIF report for PR ##{prID}: To be implemented"
-            puts "    Get the most recent commit for the PR"
-            puts "    Get the report ID associated with that commit"
-            puts "    Grab the report"
-            puts "    Save to disk"
-        end
-        puts "...done."
+            puts "Getting SARIF report(s) for PR ##{prID} in https://github.com/#{options.owner}/#{options.repo}:"
+            prInfo = client.get("/repos/#{options.owner}/#{options.repo}/pulls/#{prID}")
+            puts "  HEAD is #{prInfo.head.sha}"
+            analyses = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
+            requiredAnalyses = analyses.select {|analysis| analysis.commit_sha == prInfo.head.sha}
+            begin
+                requiredAnalyses.each do |analysis|
+                    puts "  Found Report #{analysis.id}"
+                    begin
+                        uri = URI.parse("#{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{analysis.id}")
+                        request = Net::HTTP::Get.new(uri)
+                        request.basic_auth("dummy", "#{GITHUB_PAT}")
+                        request["Accept"] = "application/vnd.github.v3+json"
+                        request["Accept"] = "application/sarif+json"
+                        
+                        req_options = {
+                        use_ssl: uri.scheme == "https",
+                        }
+                        
+                        response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+                        http.request(request)
+                        end
+                        begin
+                            puts "  Report does not exist for #{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{analysis.id}"
+                            next
+                        end if response.code != "200"
+                        puts "  Opening File pr_#{prID}_analysis_#{analysis.id}.sarif for writing"
+                        # f = File.new('pr_'+prID+'_analysis_'+analysis.id+'.sarif', 'w')
+                        f = File.new('pr_'+prID+'_analysis_' + analysis.id.to_s + '.sarif', 'w')
+                        # f = File.new('test.sarif', 'w')
+                        f.write(response.body)
+                        f.close()
+                        puts "  Report Downloaded to pr_#{prID}_analysis_#{analysis.id}.sarif"
+                    end
+                end
+                next
+            end if requiredAnalyses.length > 0
+            puts "  No analyses found for SHA #{prInfo.head.sha} for PR ##{prID} in https://github.com/#{options.owner}/#{options.repo}"
+        rescue Octokit::NotFound => ex
+            puts "  Could not find the needed data - is https://github.com/#{options.owner}/#{options.repo} the correct repository, or do you have the correct PR number?"
+            next
+       end
     end
 
 rescue Octokit::Unauthorized => ex
     puts "Bad Credentials - is your GITHUB_PAT ok?"
     exit 1
 rescue Octokit::NotFound => ex
-    puts "Could not find the needed data - is https://github.com/#{options.owner}/#{options.repo} the correct repository?"
+    puts "Could not find the needed data - is https://github.com/#{options.owner}/#{options.repo} the correct repository, or do you have the correct PR/Analysis IDs?"
     exit 1
 rescue Octokit::Forbidden => ex
     puts "Code Scanning has not been enabled for https://github.com/#{options.owner}/#{options.repo}"
