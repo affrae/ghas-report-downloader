@@ -105,9 +105,9 @@ class Optparse
       exit 1
     end
     options
-  end # parse()
+  end
 
-end # class Optparse
+end
 
 def show_wait_spinner(fps=30)
   chars = %w[| / - \\]
