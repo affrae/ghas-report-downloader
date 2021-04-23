@@ -245,7 +245,8 @@ begin
             http.request(request)
           end
           if response.code != '200'
-            puts "  Report does not exist for #{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{analysis.id}"
+            puts '  Report does not exist for'
+            puts "  #{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{analysis.id}"
             next
           end
           puts "  Opening File pr_#{pr_id}_analysis_#{analysis.id}.sarif for writing"
@@ -259,7 +260,8 @@ begin
         puts "  No analyses found for SHA #{pr_info.head.sha} for PR ##{pr_id} in https://github.com/#{options.owner}/#{options.repo}"
       end
     rescue Octokit::NotFound
-      puts "  Could not find the needed data - is https://github.com/#{options.owner}/#{options.repo} the correct repository, or do you have the correct PR number?"
+      puts "  Could not find the needed data - is https://github.com/#{options.owner}/#{options.repo}"
+      puts '  the correct repository, or do you have the correct PR number?'
       next
     end
   end
@@ -267,13 +269,15 @@ rescue Octokit::Unauthorized
   puts 'Bad Credentials - is your GITHUB_PAT ok?'
   exit 1
 rescue Octokit::NotFound
-  puts "Could not find the needed data - is https://github.com/#{options.owner}/#{options.repo} the correct repository, or do you have the correct PR/Analysis IDs?"
+  puts "Could not find the needed data - is https://github.com/#{options.owner}/#{options.repo} the correct repository,"
+  puts 'or do you have the correct PR/Analysis IDs?'
   exit 1
 rescue Octokit::Forbidden
   puts "Code Scanning has not been enabled for https://github.com/#{options.owner}/#{options.repo}"
   exit 1
 rescue Octokit::ServerError
-  puts 'It appears the service is currently not available - please try again later. You can check https://www.githubstatus.com/ for operational details'
+  puts 'It appears the service is currently not available - please try again later.'
+  puts 'You can check https://www.githubstatus.com/ for operational details'
   exit 1
 rescue Octokit::ClientError => e
   puts 'There is an Octokit Client Error we do not have a specific message for yet'
