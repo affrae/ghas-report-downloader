@@ -162,14 +162,14 @@ begin
     table = Terminal::Table.new headings: ['ID', 'Tool','Commit SHA(7)', 'Commit date', 'Commit author', 'Commit message']
     table.style = {all_separators: true}
     show_wait_spinner{
-      
+      begin
         analyses = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
 
         analyses.each do |analysis|
           commit_info = client.get("/repos/#{options.owner}/#{options.repo}/git/commits/#{analysis.commit_sha}")
           table.add_row [analysis.id, analysis.tool.name, analysis.commit_sha[0..6], analysis.created_at, commit_info.author.name, commit_info.message.length < width ? commit_info.message : "#{commit_info.message[0...(width - 4)]}..."]
         end
-      
+      end
     }
     puts table
     puts ''
@@ -182,7 +182,7 @@ begin
     puts 'Getting reports...'
     options.report_list.each do |report_id|
       puts "  Getting SARIF report with ID #{report_id}..."
-      
+      begin
         uri = URI.parse("#{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{report_id}")
         request = Net::HTTP::Get.new(uri)
         request.basic_auth('dummy', "#{GITHUB_PAT}")
@@ -196,15 +196,15 @@ begin
         response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
           http.request(request)
         end
-        
+        begin
           puts "  Report does not exist for #{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{report_id}"
           next
-         if response.code != '200'
+        end if response.code != '200'
         f = File.new("analysis_#{report_id}.sarif", 'w')
         f.write(response.body)
         puts "  Report Downloaded to analysis_#{report_id}.sarif"
         f.close
-      
+      end
     end
     puts '...done.'
 
@@ -215,10 +215,10 @@ begin
        puts "  HEAD is #{pr_info.head.sha}"
        analyses = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
        required_analyses = analyses.select { |analysis| analysis.commit_sha == pr_info.head.sha }
-       
+       begin
          required_analyses.each do |analysis|
            puts "  Found Report #{analysis.id}"
-           
+           begin
              uri = URI.parse("#{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{analysis.id}")
              request = Net::HTTP::Get.new(uri)
              request.basic_auth('dummy', "#{GITHUB_PAT}")
@@ -232,10 +232,10 @@ begin
              response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
                http.request(request)
              end
-             
+             begin
                puts "  Report does not exist for #{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{analysis.id}"
                next
-              if response.code != '200'
+             end if response.code != '200'
              puts "  Opening File pr_#{pr_id}_analysis_#{analysis.id}.sarif for writing"
              # f = File.new('pr_'+pr_id+'_analysis_'+analysis.id+'.sarif', 'w')
              f = File.new("pr_#{pr_id}_analysis_#{analysis.id.to_s}.sarif", 'w')
@@ -243,10 +243,10 @@ begin
              f.write(response.body)
              f.close
              puts "  Report Downloaded to pr_#{pr_id}_analysis_#{analysis.id}.sarif"
-           
+           end
          end
          next
-        unless required_analyses.empty?
+       end unless required_analyses.empty?
        puts "  No analyses found for SHA #{pr_info.head.sha} for PR ##{pr_id} in https://github.com/#{options.owner}/#{options.repo}"
     rescue Octokit::NotFound
       puts "  Could not find the needed data - is https://github.com/#{options.owner}/#{options.repo} the correct repository, or do you have the correct PR number?"
