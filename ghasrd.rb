@@ -92,7 +92,7 @@ class Optparse
       exit 1
     end
     options
-    
+
   end  # parse()
 
 end  # class Optparse
@@ -103,17 +103,17 @@ def show_wait_spinner(fps=30)
   iter = 0
   spinner = Thread.new do
     while iter do  # Keep spinning until told otherwise
-    print chars[(iter+=1) % chars.length]
+      print chars[(iter+=1) % chars.length]
     sleep delay
     print "\b"
     end
   end
-  yield.tap{     # After yielding to the block, save the return value
-    iter = false   # Tell the thread to exit, cleaning up after itself…
-    spinner.join   # …and wait for it to do so.
-  }        # Use the block's return value as the method's
+  yield.tap{
+    iter = false
+    spinner.join
+  }
 end
-  
+
 # begin ... end defines code that needs to run on its own in its own context
 # rescue gives a block to execute if an error occurs during runtime.
 # it functions to handle exceptions, and takes a single argument: the class/type of error that you want to rescue from.
@@ -124,15 +124,15 @@ end
 # in a shell script a non-zero exit value means it is an error 
 
 begin
-  GITHUB_PAT = ENV.fetch("GITHUB_PAT")
+  GITHUB_PAT = ENV.fetch('GITHUB_PAT')
 rescue KeyError
-  $stderr.puts "To run this script, please set the following environment variables:"
-  $stderr.puts "- GITHUB_PAT: A Personal Access Token (PAT) for your account"
+  warn 'To be able to run this script, you are required to set the following environment variables:'
+  warn '- GITHUB_PAT: A Personal Access Token (PAT) for your account'
   exit 1
 end
 
 begin
-  client = Octokit::Client.new :access_token => GITHUB_PAT
+  client = Octokit::Client.new access_token: GITHUB_PAT
   client.auto_paginate = true
 end
 
@@ -148,8 +148,8 @@ begin
     puts "Listing available reports for https://github.com/#{options.owner}/#{options.repo}..."
     rows = []
     width = 40
-    table = Terminal::Table.new :headings => ['ID', 'Tool','Commit SHA(7)', 'Commit date', 'Commit author', 'Commit message']
-    table.style = {:all_separators => true}
+    table = Terminal::Table.new headings: ['ID', 'Tool','Commit SHA(7)', 'Commit date', 'Commit author', 'Commit message']
+    table.style = {all_separators: true}
     show_wait_spinner{
       begin
         analyses = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
@@ -159,7 +159,7 @@ begin
           table.add_row [analysis.id, analysis.tool.name, analysis.commit_sha[0..6], analysis.created_at, commitInfo.author.name, commitInfo.message.length < width ?  commitInfo.message : commitInfo.message[0...(width -4)] + "..."] 
         end
       end
-    }       
+    }
     puts table
     puts ""
     puts "To get a report issue the command\n  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g [ID]\nwhere [ID] is the ID of the analysis you are interested in from the table above."
