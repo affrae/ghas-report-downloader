@@ -80,7 +80,7 @@ class Optparse
       # Run verbosely
       opts.on('-V', 'Run extra verbosely') do
         options.verbose = true
-       options.extraVerbose = true
+        options.extraVerbose = true
       end
 
       opts.separator ''
