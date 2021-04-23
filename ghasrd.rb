@@ -212,11 +212,11 @@ begin
             request.basic_auth("dummy", "#{GITHUB_PAT}")
             request["Accept"] = "application/vnd.github.v3+json"
             request["Accept"] = "application/sarif+json"
-            
+
             req_options = {
             use_ssl: uri.scheme == "https",
             }
-            
+
             response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
             http.request(request)
             end
