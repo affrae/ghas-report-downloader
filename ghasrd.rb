@@ -185,7 +185,7 @@ begin
       begin
         uri = URI.parse("#{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{report_id}")
         request = Net::HTTP::Get.new(uri)
-        request.basic_auth('dummy', "#{GITHUB_PAT}")
+        request.basic_auth('dummy', (GITHUB_PAT).to_s)
         request['Accept'] = 'application/vnd.github.v3+json'
         request['Accept'] = 'application/sarif+json'
 
@@ -221,7 +221,7 @@ begin
            begin
              uri = URI.parse("#{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{analysis.id}")
              request = Net::HTTP::Get.new(uri)
-             request.basic_auth('dummy', "#{GITHUB_PAT}")
+             request.basic_auth('dummy', (GITHUB_PAT).to_s)
              request['Accept'] = 'application/vnd.github.v3+json'
              request['Accept'] = 'application/sarif+json'
 
