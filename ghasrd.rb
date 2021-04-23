@@ -199,7 +199,7 @@ begin
         begin
           puts "  Report does not exist for #{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{report_id}"
           next
-        end if response.code != '200'
+        end unless response.code == '200'
         f = File.new("analysis_#{report_id}.sarif", 'w')
         f.write(response.body)
         puts "  Report Downloaded to analysis_#{report_id}.sarif"
