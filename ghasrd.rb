@@ -81,7 +81,7 @@ class Optparse
       opts.on('-V', 'Run extra verbosely') do
        options.verbose = true
        options.extraVerbose = true
-     end
+      end
 
       opts.separator ''
       opts.separator 'Common options:'
