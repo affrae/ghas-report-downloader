@@ -31,7 +31,7 @@ class Optparse
           raise OptionParser::InvalidArgument, "OWNER may only contain alphanumeric characters or single hyphens, and cannot begin or end with a hyphen. '#{owner}' fails this test!"
         end
 
-        options.owner = owner 
+        options.owner = owner
       end
 
       opts.on('-r', '--repo REPO', '(Required) a REPO to query') do |repo|
@@ -81,7 +81,7 @@ class Optparse
         options.verbose = true
         options.extraVerbose = true
       end
- 
+
       opts.separator ''
       opts.separator 'Common options:'
 
@@ -133,7 +133,7 @@ end
 # a KeyError is raised when the specified key is not found.
 # in this case it is an environment variable
 # if an environment variable does not exist, execute the code in the rescue block and exit status 1
-# in a shell script a non-zero exit value means it is an error 
+# in a shell script a non-zero exit value means it is an error
 
 begin
   GITHUB_PAT = ENV.fetch('GITHUB_PAT')
@@ -164,10 +164,10 @@ begin
     show_wait_spinner{
       begin
         analyses = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
-  
+
         analyses.each do |analysis|
           commit_info = client.get("/repos/#{options.owner}/#{options.repo}/git/commits/#{analysis.commit_sha}")
-          table.add_row [analysis.id, analysis.tool.name, analysis.commit_sha[0..6], analysis.created_at, commit_info.author.name, commit_info.message.length < width ? commit_info.message : commit_info.message[0...(width - 4)] + '...'] 
+          table.add_row [analysis.id, analysis.tool.name, analysis.commit_sha[0..6], analysis.created_at, commit_info.author.name, commit_info.message.length < width ? commit_info.message : commit_info.message[0...(width - 4)] + '...']
         end
       end
     }
