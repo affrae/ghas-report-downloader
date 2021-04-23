@@ -49,17 +49,17 @@ class Optparse
 
       # get or grab one or more PR reports
 
-      opts.on('-p x,y,z', '--pr x,y,z', Array, 'Get reports for the most recent commit on the source branch for each of the listed Pull Request numbers') do |prList|
-        raise OptionParser::InvalidArgument, "Pull Request Item lists may only contain numbers. '#{prList.join(',')}' fails this test!" unless prList.all? {|i| i.match('^([0-9])*$') }
+      opts.on('-p x,y,z', '--pr x,y,z', Array, 'Get reports for the most recent commit on the source branch for each of the listed Pull Request numbers') do |pr_list|
+        raise OptionParser::InvalidArgument, "Pull Request Item lists may only contain numbers. '#{pr_list.join(',')}' fails this test!" unless pr_list.all? {|i| i.match('^([0-9])*$') }
 
-        options.prList = prList
+        options.pr_list = pr_list
         options.command = 'pr'
       end
 
-      opts.on('-g x,y,z', '--get x,y,z', '--grab x,y,z', Array, 'Get one or more reports by the Analysis ID.') do |reportList|
-        raise OptionParser::InvalidArgument, "Analysis ID lists may only contain numbers. '#{reportList.join(',')}' fails this test!" unless reportList.all? {|i| i.match('^([0-9])*$') }
+      opts.on('-g x,y,z', '--get x,y,z', '--grab x,y,z', Array, 'Get one or more reports by the Analysis ID.') do |report_list|
+        raise OptionParser::InvalidArgument, "Analysis ID lists may only contain numbers. '#{report_list.join(',')}' fails this test!" unless report_list.all? {|i| i.match('^([0-9])*$') }
 
-        options.reportList = reportList
+        options.report_list = report_list
         options.command = 'get'
       end
 
@@ -86,10 +86,10 @@ class Optparse
 
     begin
       opt_parser.parse!(args)
-      mandatoryMissing = []
-      mandatoryMissing << '-o OWNER' if options[:owner].nil?
-      mandatoryMissing << '-r REPO' if options[:repo].nil?
-      raise OptionParser::MissingArgument, mandatoryMissing.join(' ') if mandatoryMissing.length > 0
+      mandatory_missing = []
+      mandatory_missing << '-o OWNER' if options[:owner].nil?
+      mandatory_missing << '-r REPO' if options[:repo].nil?
+      raise OptionParser::MissingArgument, mandatory_missing.join(' ') if mandatory_missing.length > 0
     rescue OptionParser::ParseError => ex
       puts ex
       puts opt_parser
@@ -158,8 +158,8 @@ begin
         analyses = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
   
         analyses.each do |analysis|
-          commitInfo = client.get("/repos/#{options.owner}/#{options.repo}/git/commits/#{analysis.commit_sha}")
-          table.add_row [analysis.id, analysis.tool.name, analysis.commit_sha[0..6], analysis.created_at, commitInfo.author.name, commitInfo.message.length < width ?  commitInfo.message : commitInfo.message[0...(width -4)] + '...'] 
+          commit_info = client.get("/repos/#{options.owner}/#{options.repo}/git/commits/#{analysis.commit_sha}")
+          table.add_row [analysis.id, analysis.tool.name, analysis.commit_sha[0..6], analysis.created_at, commit_info.author.name, commit_info.message.length < width ?  commit_info.message : commit_info.message[0...(width -4)] + '...'] 
         end
       end
     }
@@ -170,10 +170,10 @@ begin
 
   when 'get'
     puts 'Getting reports...'
-    options.reportList.each do |reportID|
-      puts "  Getting SARIF report with ID #{reportID}..."
+    options.report_list.each do |report_id|
+      puts "  Getting SARIF report with ID #{report_id}..."
       begin
-        uri = URI.parse("#{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{reportID}")
+        uri = URI.parse("#{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{report_id}")
         request = Net::HTTP::Get.new(uri)
         request.basic_auth('dummy', "#{GITHUB_PAT}")
         request['Accept'] = 'application/vnd.github.v3+json'
@@ -187,26 +187,26 @@ begin
           http.request(request)
         end
         begin
-          puts "  Report does not exist for #{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{reportID}"
+          puts "  Report does not exist for #{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{report_id}"
           next
         end if response.code != '200'
-        f = File.new('analysis_'+reportID+'.sarif', 'w')
+        f = File.new('analysis_'+report_id+'.sarif', 'w')
         f.write(response.body)
-        puts '  Report Downloaded to analysis_'+reportID+'.sarif'
+        puts '  Report Downloaded to analysis_'+report_id+'.sarif'
         f.close()
       end
     end
     puts '...done.'
 
   when 'pr'
-    options.prList.each do |prID|
-      puts "Getting SARIF report(s) for PR ##{prID} in https://github.com/#{options.owner}/#{options.repo}:"
-      prInfo = client.get("/repos/#{options.owner}/#{options.repo}/pulls/#{prID}")
-      puts "  HEAD is #{prInfo.head.sha}"
+    options.pr_list.each do |pr_id|
+      puts "Getting SARIF report(s) for PR ##{pr_id} in https://github.com/#{options.owner}/#{options.repo}:"
+      pr_info = client.get("/repos/#{options.owner}/#{options.repo}/pulls/#{pr_id}")
+      puts "  HEAD is #{pr_info.head.sha}"
       analyses = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
-      requiredAnalyses = analyses.select {|analysis| analysis.commit_sha == prInfo.head.sha}
+      required_analyses = analyses.select {|analysis| analysis.commit_sha == pr_info.head.sha}
       begin
-        requiredAnalyses.each do |analysis|
+        required_analyses.each do |analysis|
           puts "  Found Report #{analysis.id}"
           begin
             uri = URI.parse("#{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{analysis.id}")
@@ -226,18 +226,18 @@ begin
               puts "  Report does not exist for #{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{analysis.id}"
               next
             end if response.code != '200'
-            puts "  Opening File pr_#{prID}_analysis_#{analysis.id}.sarif for writing"
-            # f = File.new('pr_'+prID+'_analysis_'+analysis.id+'.sarif', 'w')
-            f = File.new('pr_'+prID+'_analysis_' + analysis.id.to_s + '.sarif', 'w')
+            puts "  Opening File pr_#{pr_id}_analysis_#{analysis.id}.sarif for writing"
+            # f = File.new('pr_'+pr_id+'_analysis_'+analysis.id+'.sarif', 'w')
+            f = File.new('pr_'+pr_id+'_analysis_' + analysis.id.to_s + '.sarif', 'w')
             # f = File.new('test.sarif', 'w')
             f.write(response.body)
             f.close()
-            puts "  Report Downloaded to pr_#{prID}_analysis_#{analysis.id}.sarif"
+            puts "  Report Downloaded to pr_#{pr_id}_analysis_#{analysis.id}.sarif"
           end
         end
         next
-      end if requiredAnalyses.length > 0
-      puts "  No analyses found for SHA #{prInfo.head.sha} for PR ##{prID} in https://github.com/#{options.owner}/#{options.repo}"
+      end if required_analyses.length > 0
+      puts "  No analyses found for SHA #{pr_info.head.sha} for PR ##{pr_id} in https://github.com/#{options.owner}/#{options.repo}"
     rescue Octokit::NotFound
       puts "  Could not find the needed data - is https://github.com/#{options.owner}/#{options.repo} the correct repository, or do you have the correct PR number?"
       next
