@@ -88,7 +88,7 @@ ghasrd.rb -o [OWNER] -r [REPO] -g 5876671,5876116
 
 ```
 
-### Download the current report for a PR (NOTE: Under Construction)
+### Download the current report for a PR
 
 If you know the number of a PR (or multiple PRs), you can use the following command to download the currrent code scanning report for that PR:
 
