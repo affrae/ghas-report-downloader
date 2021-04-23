@@ -178,6 +178,10 @@ begin
         puts "Getting reports for PRs..."
         options.prList.each do |prID|
             puts "  Getting SARIF report for PR ##{prID}: To be implemented"
+            puts "    Get the most recent commit for the PR"
+            puts "    Get the report ID associated with that commit"
+            puts "    Grab the report"
+            puts "    Save to disk"
         end
         puts "...done."
     end
