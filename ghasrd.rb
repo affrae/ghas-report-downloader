@@ -200,47 +200,47 @@ begin
 
   when 'pr'
     options.pr_list.each do |pr_id|
-      puts "Getting SARIF report(s) for PR ##{pr_id} in https://github.com/#{options.owner}/#{options.repo}:"
-      pr_info = client.get("/repos/#{options.owner}/#{options.repo}/pulls/#{pr_id}")
-      puts "  HEAD is #{pr_info.head.sha}"
-      analyses = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
-      required_analyses = analyses.select {|analysis| analysis.commit_sha == pr_info.head.sha}
-      begin
-        required_analyses.each do |analysis|
-          puts "  Found Report #{analysis.id}"
-          begin
-            uri = URI.parse("#{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{analysis.id}")
-            request = Net::HTTP::Get.new(uri)
-            request.basic_auth('dummy', "#{GITHUB_PAT}")
-            request['Accept'] = 'application/vnd.github.v3+json'
-            request['Accept'] = 'application/sarif+json'
+       puts "Getting SARIF report(s) for PR ##{pr_id} in https://github.com/#{options.owner}/#{options.repo}:"
+       pr_info = client.get("/repos/#{options.owner}/#{options.repo}/pulls/#{pr_id}")
+       puts "  HEAD is #{pr_info.head.sha}"
+       analyses = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
+       required_analyses = analyses.select {|analysis| analysis.commit_sha == pr_info.head.sha}
+       begin
+         required_analyses.each do |analysis|
+           puts "  Found Report #{analysis.id}"
+           begin
+             uri = URI.parse("#{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{analysis.id}")
+             request = Net::HTTP::Get.new(uri)
+             request.basic_auth('dummy', "#{GITHUB_PAT}")
+             request['Accept'] = 'application/vnd.github.v3+json'
+             request['Accept'] = 'application/sarif+json'
 
-            req_options = {
-            use_ssl: uri.scheme == 'https',
-            }
+             req_options = {
+             use_ssl: uri.scheme == 'https',
+             }
 
-            response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
-            http.request(request)
-            end
-            begin
-              puts "  Report does not exist for #{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{analysis.id}"
-              next
-            end if response.code != '200'
-            puts "  Opening File pr_#{pr_id}_analysis_#{analysis.id}.sarif for writing"
-            # f = File.new('pr_'+pr_id+'_analysis_'+analysis.id+'.sarif', 'w')
-            f = File.new('pr_' + pr_id + '_analysis_' + analysis.id.to_s + '.sarif', 'w')
-            # f = File.new('test.sarif', 'w')
-            f.write(response.body)
-            f.close
-            puts "  Report Downloaded to pr_#{pr_id}_analysis_#{analysis.id}.sarif"
-          end
-        end
-        next
-      end if required_analyses.length > 0
-      puts "  No analyses found for SHA #{pr_info.head.sha} for PR ##{pr_id} in https://github.com/#{options.owner}/#{options.repo}"
-    rescue Octokit::NotFound
-      puts "  Could not find the needed data - is https://github.com/#{options.owner}/#{options.repo} the correct repository, or do you have the correct PR number?"
-      next
+             response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+               http.request(request)
+             end
+             begin
+               puts "  Report does not exist for #{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{analysis.id}"
+               next
+             end if response.code != '200'
+             puts "  Opening File pr_#{pr_id}_analysis_#{analysis.id}.sarif for writing"
+             # f = File.new('pr_'+pr_id+'_analysis_'+analysis.id+'.sarif', 'w')
+             f = File.new('pr_' + pr_id + '_analysis_' + analysis.id.to_s + '.sarif', 'w')
+             # f = File.new('test.sarif', 'w')
+             f.write(response.body)
+             f.close
+             puts "  Report Downloaded to pr_#{pr_id}_analysis_#{analysis.id}.sarif"
+           end
+         end
+         next
+       end if required_analyses.length > 0
+       puts "  No analyses found for SHA #{pr_info.head.sha} for PR ##{pr_id} in https://github.com/#{options.owner}/#{options.repo}"
+     rescue Octokit::NotFound
+       puts "  Could not find the needed data - is https://github.com/#{options.owner}/#{options.repo} the correct repository, or do you have the correct PR number?"
+       next
      end
   end
 
