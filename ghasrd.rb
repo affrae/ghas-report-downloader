@@ -27,13 +27,17 @@ class Optparse
       opts.separator 'Mandatory options:'
 
       opts.on('-o', '--owner OWNER', '(Required) the OWNER of the repository') do |owner|
-        raise OptionParser::InvalidArgument, "OWNER may only contain alphanumeric characters or single hyphens, and cannot begin or end with a hyphen. '#{owner}' fails this test!" unless owner.match('^([a-z0-9])(?!.*--)([a-z0-9-])*([a-z0-9])$')
+        unless owner.match('^([a-z0-9])(?!.*--)([a-z0-9-])*([a-z0-9])$')
+          raise OptionParser::InvalidArgument, "OWNER may only contain alphanumeric characters or single hyphens, and cannot begin or end with a hyphen. '#{owner}' fails this test!"
+        end
 
         options.owner = owner 
       end
 
       opts.on('-r', '--repo REPO', '(Required) a REPO to query') do |repo|
-        raise OptionParser::InvalidArgument, "REPO may only contain alphanumeric characters or hyphens. '#{repo}' fails this test!" unless repo.match('^[a-z0-9-]*$')
+        unless repo.match('^[a-z0-9-]*$')
+          raise OptionParser::InvalidArgument, "REPO may only contain alphanumeric characters or hyphens. '#{repo}' fails this test!"
+        end
 
         options.repo = repo
       end
@@ -50,14 +54,18 @@ class Optparse
       # get or grab one or more PR reports
 
       opts.on('-p x,y,z', '--pr x,y,z', Array, 'Get reports for the most recent commit on the source branch for each of the listed Pull Request numbers') do |pr_list|
-        raise OptionParser::InvalidArgument, "Pull Request Item lists may only contain numbers. '#{pr_list.join(',')}' fails this test!" unless pr_list.all? {|i| i.match('^([0-9])*$') }
+        unless pr_list.all? {|i| i.match('^([0-9])*$') }
+          raise OptionParser::InvalidArgument, "Pull Request Item lists may only contain numbers. '#{pr_list.join(',')}' fails this test!"
+        end
 
         options.pr_list = pr_list
         options.command = 'pr'
       end
 
       opts.on('-g x,y,z', '--get x,y,z', '--grab x,y,z', Array, 'Get one or more reports by the Analysis ID.') do |report_list|
-        raise OptionParser::InvalidArgument, "Analysis ID lists may only contain numbers. '#{report_list.join(',')}' fails this test!" unless report_list.all? {|i| i.match('^([0-9])*$') }
+        unless report_list.all? {|i| i.match('^([0-9])*$') }
+          raise OptionParser::InvalidArgument, "Analysis ID lists may only contain numbers. '#{report_list.join(',')}' fails this test!"
+        end
 
         options.report_list = report_list
         options.command = 'get'
@@ -166,7 +174,9 @@ begin
     puts table
     puts ''
     puts "To get a report issue the command\n  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g [ID]\nwhere [ID] is the ID of the analysis you are interested in from the table above."
-    puts "\nFor example:\n  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g #{rows[rows.length - 1][0]}\nto get the last report on that table" unless rows.empty?
+    unless rows.empty?
+      puts "\nFor example:\n  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g #{rows[rows.length - 1][0]}\nto get the last report on that table"
+    end
 
   when 'get'
     puts 'Getting reports...'
