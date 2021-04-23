@@ -191,7 +191,8 @@ begin
     puts ''
     puts "To get a report issue the command\n  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g [ID]\nwhere [ID] is the ID of the analysis you are interested in from the table above."
     unless rows.empty?
-      puts "\nFor example:\n  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g #{rows[rows.length - 1][0]}\nto get the last report on that table"
+      puts "\nFor example:\n  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g #{rows[rows.length - 1][0]}"
+      puts 'to get the last report on that table'
     end
 
   when 'get'
