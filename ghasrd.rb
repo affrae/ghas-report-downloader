@@ -242,16 +242,16 @@ begin
        end
     end
 
-rescue Octokit::Unauthorized => ex
+rescue Octokit::Unauthorized
     puts "Bad Credentials - is your GITHUB_PAT ok?"
     exit 1
-rescue Octokit::NotFound => ex
+rescue Octokit::NotFound
     puts "Could not find the needed data - is https://github.com/#{options.owner}/#{options.repo} the correct repository, or do you have the correct PR/Analysis IDs?"
     exit 1
-rescue Octokit::Forbidden => ex
+rescue Octokit::Forbidden
     puts "Code Scanning has not been enabled for https://github.com/#{options.owner}/#{options.repo}"
     exit 1
-rescue Octokit::ServerError => ex
+rescue Octokit::ServerError
     puts "It appears the service is currently not available - please try again later. You can check https://www.githubstatus.com/ for operational details"
     exit 1
 rescue Octokit::ClientError => ex
