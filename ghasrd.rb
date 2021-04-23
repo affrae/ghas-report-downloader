@@ -159,7 +159,7 @@ begin
     rows = []
     width = 40
     table = Terminal::Table.new headings: ['ID', 'Tool','Commit SHA(7)', 'Commit date', 'Commit author', 'Commit message']
-    table.style = {all_separators: true}
+    table.style = { all_separators: true }
     show_wait_spinner{
       analyses = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
 
