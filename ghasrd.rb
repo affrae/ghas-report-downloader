@@ -12,7 +12,6 @@ require 'uri'
 # Get command Line options using docs @ https://ruby-doc.org/stdlib-3.0.1/libdoc/optparse/rdoc/OptionParser.html
 
 class Optparse
-
   def self.parse(args)
     # The options specified on the command line will be collected in *options*.
     # We set default values here.
@@ -267,4 +266,3 @@ rescue StandardError => ex
   puts ex
   exit 1
 end
-
