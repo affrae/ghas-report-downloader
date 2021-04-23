@@ -112,7 +112,7 @@ class Optparse
   end
 end
 
-def show_wait_spinner(fps=30)
+def show_wait_spinner(fps = 30)
   chars = %w[| / - \\]
   delay = 1.0 / fps
   iter = 0
