@@ -106,7 +106,6 @@ class Optparse
     end
     options
   end
-
 end
 
 def show_wait_spinner(fps=30)
