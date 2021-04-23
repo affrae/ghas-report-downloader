@@ -75,7 +75,7 @@ class Optparse
         options.verbose = true
       end
 
-       # Run verbosely
+      # Run verbosely
       opts.on('-V', 'Run extra verbosely') do
        options.verbose = true
        options.extraVerbose = true
