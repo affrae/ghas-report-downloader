@@ -76,10 +76,10 @@ class Optparse
       end
 
        # Run verbosely
-       opts.on('-V', 'Run extra verbosely') do
-        options.verbose = true
-        options.extraVerbose = true
-      end
+      opts.on('-V', 'Run extra verbosely') do
+       options.verbose = true
+       options.extraVerbose = true
+     end
 
       opts.separator ''
       opts.separator 'Common options:'
@@ -115,8 +115,8 @@ def show_wait_spinner(fps=30)
   spinner = Thread.new do
     while iter do  # Keep spinning until told otherwise
       print chars[(iter += 1) % chars.length]
-    sleep delay
-    print "\b"
+      sleep delay
+      print "\b"
     end
   end
   yield.tap do
