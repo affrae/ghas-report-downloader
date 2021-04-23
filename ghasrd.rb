@@ -89,7 +89,7 @@ class Optparse
       mandatory_missing = []
       mandatory_missing << '-o OWNER' if options[:owner].nil?
       mandatory_missing << '-r REPO' if options[:repo].nil?
-      raise OptionParser::MissingArgument, mandatory_missing.join(' ') if mandatory_missing.length > 0
+      raise OptionParser::MissingArgument, mandatory_missing.join(' ') unless mandatory_missing.empty?
     rescue OptionParser::ParseError => ex
       puts ex
       puts opt_parser
@@ -166,7 +166,7 @@ begin
     puts table
     puts ''
     puts "To get a report issue the command\n  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g [ID]\nwhere [ID] is the ID of the analysis you are interested in from the table above."
-    puts "\nFor example:\n  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g #{rows[rows.length - 1][0]}\nto get the last report on that table" if rows.length > 0
+    puts "\nFor example:\n  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g #{rows[rows.length - 1][0]}\nto get the last report on that table" unless rows.empty?
 
   when 'get'
     puts 'Getting reports...'
@@ -236,7 +236,7 @@ begin
            end
          end
          next
-       end if required_analyses.length > 0
+       end unless required_analyses.empty?
        puts "  No analyses found for SHA #{pr_info.head.sha} for PR ##{pr_id} in https://github.com/#{options.owner}/#{options.repo}"
     rescue Octokit::NotFound
        puts "  Could not find the needed data - is https://github.com/#{options.owner}/#{options.repo} the correct repository, or do you have the correct PR number?"
