@@ -134,12 +134,12 @@ begin
         width = 40
         begin
             analyses = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
-            table = Terminal::Table.new :headings => ['ID', 'Commit SHA(7)', 'Commit date', 'Commit author', 'Message']
+            table = Terminal::Table.new :headings => ['ID', 'Tool','Commit SHA(7)', 'Commit date', 'Commit author', 'Commit message']
             table.style = {:all_separators => true}
 
             analyses.each do |analysis|
                 commitInfo = client.get("/repos/#{options.owner}/#{options.repo}/git/commits/#{analysis.commit_sha}")
-                table.add_row [analysis.id, analysis.commit_sha[0..6], analysis.created_at, commitInfo.author.name, commitInfo.message.length < width ?  commitInfo.message : commitInfo.message[0...(width -4)] + "..."] 
+                table.add_row [analysis.id, analysis.tool.name, analysis.commit_sha[0..6], analysis.created_at, commitInfo.author.name, commitInfo.message.length < width ?  commitInfo.message : commitInfo.message[0...(width -4)] + "..."] 
             end
         end    
         puts table
