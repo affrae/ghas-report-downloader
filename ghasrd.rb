@@ -1,5 +1,7 @@
 #!/usr/bin/ruby
 
+# frozen_string_literal: true
+
 require 'terminal-table'
 require 'octokit'
 require 'optparse'
