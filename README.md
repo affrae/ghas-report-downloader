@@ -25,7 +25,7 @@ bundle install
 
 ``` zsh
 ➜  ghas-report-downloader git:(main) ✗ ./ghasrd.rb -l -o affrae -r quickjavahelloworldmultimodule
-Listing available reports for affrae/quickjavahelloworldmultimodule
+Listing available reports for https://github.com/affrae/quickjavahelloworldmultimodule...
 +---------+---------------+-------------------------+-----------------+-----------------------------------------+
 | ID      | Commit SHA(7) | Commit date             | Commit author   | Message                                 |
 +---------+---------------+-------------------------+-----------------+-----------------------------------------+
@@ -67,12 +67,11 @@ Listing available reports for affrae/quickjavahelloworldmultimodule
 +---------+---------------+-------------------------+-----------------+-----------------------------------------+
 | 5876116 | 1f14ad5       | 2021-04-01 05:21:38 UTC | Daniel Figucio  | Create codeql-analysis.yml              |
 +---------+---------------+-------------------------+-----------------+-----------------------------------------+
-+---------+-----------------------------------------------------------------------------------------------------+
 
 To get a report issue the command
   ./ghasrd.rb -o affrae -r quickjavahelloworldmultimodule -g [ID]
-where [ID] is the ID of the analysis you are interested in from the table above.                                                                                                                                                                                                                                               /6.2s
-➜  ghas-report-downloader git:(main) ✗ 
+where [ID] is the ID of the analysis you are interested in from the table above.                                                                                                                                                                                                                                                               /6.0s
+➜  ghas-report-downloader git:(main) ✗  
 ```
 
 ## Downloading reports
