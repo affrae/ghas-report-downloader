@@ -9,7 +9,7 @@ require 'json'
 require 'net/http'
 require 'uri'
 
-# Get command Line options using docs @ https://ruby-doc.org/stdlib-2.1.1/libdoc/optparse/rdoc/OptionParser.html
+# Get command Line options using docs @ https://ruby-doc.org/stdlib-3.0.1/libdoc/optparse/rdoc/OptionParser.html
 
 class Optparse
 
@@ -165,6 +165,7 @@ begin
         puts ""
         puts "To get a report issue the command\n  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g [ID]\nwhere [ID] is the ID of the analysis you are interested in from the table above."
         puts "\nFor example:\n  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g #{rows[rows.length-1][0]}\nto get the last report on that table" if rows.length > 0
+
     when "get"
         puts "Getting reports..."
         options.reportList.each do |reportID|
