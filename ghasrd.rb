@@ -238,7 +238,7 @@ begin
              end if response.code != '200'
              puts "  Opening File pr_#{pr_id}_analysis_#{analysis.id}.sarif for writing"
              # f = File.new('pr_'+pr_id+'_analysis_'+analysis.id+'.sarif', 'w')
-             f = File.new("pr_#{pr_id}_analysis_#{analysis.id.to_s}.sarif", 'w')
+             f = File.new("pr_#{pr_id}_analysis_#{analysis.id}.sarif", 'w')
              # f = File.new('test.sarif', 'w')
              f.write(response.body)
              f.close
