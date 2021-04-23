@@ -18,63 +18,63 @@ class Optparse
     options = OpenStruct.new
     options.verbose = false
     options.extraVerbose = false
-    options.APIEndpoint = "https://api.github.com"
+    options.APIEndpoint = 'https://api.github.com'
 
     opt_parser = OptionParser.new do |opts|
       opts.banner = "Usage: #{$PROGRAM_NAME} [options]"
 
-      opts.separator ""
-      opts.separator "Mandatory options:"
+      opts.separator ''
+      opts.separator 'Mandatory options:'
 
-      opts.on("-o", "--owner OWNER", "(Required) the OWNER of the repository") do |owner|
+      opts.on('-o', '--owner OWNER', '(Required) the OWNER of the repository') do |owner|
         raise OptionParser::InvalidArgument.new "OWNER may only contain alphanumeric characters or single hyphens, and cannot begin or end with a hyphen. '#{owner}' fails this test!" if !owner.match('^([a-z0-9])(?!.*--)([a-z0-9-])*([a-z0-9])$')
         options.owner = owner 
       end
 
-      opts.on("-r", "--repo REPO", "(Required) a REPO to query") do |repo|
+      opts.on('-r', '--repo REPO', '(Required) a REPO to query') do |repo|
         raise OptionParser::InvalidArgument.new "REPO may only contain alphanumeric characters or hyphens. '#{repo}' fails this test!" if !repo.match('^[a-z0-9-]*$')
         options.repo = repo
       end
 
-      opts.separator ""
-      opts.separator "Specific options:"
+      opts.separator ''
+      opts.separator 'Specific options:'
 
 
       # List the reports available
-      opts.on("-l", "--list", "List available reports") do
-        options.command = "list"
+      opts.on('-l', '--list', 'List available reports') do
+        options.command = 'list'
       end
 
       # get or grab one or more PR reports
 
-      opts.on("-p x,y,z", "--pr x,y,z", Array, "Get reports for the most recent commit on the source branch for each of the listed Pull Request numbers") do |prList|
+      opts.on('-p x,y,z', '--pr x,y,z', Array, 'Get reports for the most recent commit on the source branch for each of the listed Pull Request numbers') do |prList|
         raise OptionParser::InvalidArgument.new "Pull Request Item lists may only contain numbers. '#{prList.join(',')}' fails this test!" if !prList.all? {|i| i.match('^([0-9])*$') }
         options.prList = prList
-        options.command = "pr"
+        options.command = 'pr'
       end
 
-      opts.on("-g x,y,z", "--get x,y,z", "--grab x,y,z", Array, "Get one or more reports by the Analysis ID.") do |reportList|
+      opts.on('-g x,y,z', '--get x,y,z', '--grab x,y,z', Array, 'Get one or more reports by the Analysis ID.') do |reportList|
         raise OptionParser::InvalidArgument.new "Analysis ID lists may only contain numbers. '#{reportList.join(',')}' fails this test!" if !reportList.all? {|i| i.match('^([0-9])*$') }
         options.reportList = reportList
-        options.command = "get"
+        options.command = 'get'
       end
 
       # Run verbosely
-      opts.on("-v", "Run verbosely") do
+      opts.on('-v', 'Run verbosely') do
         options.verbose = true
       end
 
        # Run verbosely
-       opts.on("-V", "Run extra verbosely") do
+       opts.on('-V', 'Run extra verbosely') do
         options.verbose = true
         options.extraVerbose = true
       end
  
-      opts.separator ""
-      opts.separator "Common options:"
+      opts.separator ''
+      opts.separator 'Common options:'
 
       # No argument, shows at tail.  This will print an options summary.
-      opts.on_tail("-h", "--help", "Show this message") do
+      opts.on_tail('-h', '--help', 'Show this message') do
         puts opts
         exit
       end
@@ -83,8 +83,8 @@ class Optparse
     begin
       opt_parser.parse!(args)
       mandatoryMissing = []
-      mandatoryMissing << "-o OWNER" if options[:owner].nil?
-      mandatoryMissing << "-r REPO" if options[:repo].nil?
+      mandatoryMissing << '-o OWNER' if options[:owner].nil?
+      mandatoryMissing << '-r REPO' if options[:repo].nil?
       raise OptionParser::MissingArgument.new mandatoryMissing.join(' ') if mandatoryMissing.length > 0
     rescue OptionParser::ParseError => ex
       puts ex
@@ -131,20 +131,19 @@ rescue KeyError
   exit 1
 end
 
-begin
-  client = Octokit::Client.new access_token: GITHUB_PAT
-  client.auto_paginate = true
-end
+client = Octokit::Client.new access_token: GITHUB_PAT
+client.auto_paginate = true
 
 options = Optparse.parse(ARGV)
-if options.extraVerbose then
+
+if options.extraVerbose
   pp options
   puts "Running as @#{client.user.login}"
 end
 
 begin
   case options.command
-  when "list"
+  when 'list'
     puts "Listing available reports for https://github.com/#{options.owner}/#{options.repo}..."
     rows = []
     width = 40
@@ -156,28 +155,28 @@ begin
   
         analyses.each do |analysis|
           commitInfo = client.get("/repos/#{options.owner}/#{options.repo}/git/commits/#{analysis.commit_sha}")
-          table.add_row [analysis.id, analysis.tool.name, analysis.commit_sha[0..6], analysis.created_at, commitInfo.author.name, commitInfo.message.length < width ?  commitInfo.message : commitInfo.message[0...(width -4)] + "..."] 
+          table.add_row [analysis.id, analysis.tool.name, analysis.commit_sha[0..6], analysis.created_at, commitInfo.author.name, commitInfo.message.length < width ?  commitInfo.message : commitInfo.message[0...(width -4)] + '...'] 
         end
       end
     }
     puts table
-    puts ""
+    puts ''
     puts "To get a report issue the command\n  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g [ID]\nwhere [ID] is the ID of the analysis you are interested in from the table above."
     puts "\nFor example:\n  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g #{rows[rows.length-1][0]}\nto get the last report on that table" if rows.length > 0
 
-  when "get"
-    puts "Getting reports..."
+  when 'get'
+    puts 'Getting reports...'
     options.reportList.each do |reportID|
       puts "  Getting SARIF report with ID #{reportID}..."
       begin
         uri = URI.parse("#{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{reportID}")
         request = Net::HTTP::Get.new(uri)
-        request.basic_auth("dummy", "#{GITHUB_PAT}")
-        request["Accept"] = "application/vnd.github.v3+json"
-        request["Accept"] = "application/sarif+json"
+        request.basic_auth('dummy', "#{GITHUB_PAT}")
+        request['Accept'] = 'application/vnd.github.v3+json'
+        request['Accept'] = 'application/sarif+json'
 
         req_options = {
-          use_ssl: uri.scheme == "https",
+          use_ssl: uri.scheme == 'https',
         }
 
         response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
@@ -186,16 +185,16 @@ begin
         begin
           puts "  Report does not exist for #{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{reportID}"
           next
-        end if response.code != "200"
+        end if response.code != '200'
         f = File.new('analysis_'+reportID+'.sarif', 'w')
         f.write(response.body)
-        puts "  Report Downloaded to analysis_"+reportID+".sarif"
+        puts '  Report Downloaded to analysis_'+reportID+'.sarif'
         f.close()
       end
     end
-    puts "...done."
+    puts '...done.'
 
-  when "pr"
+  when 'pr'
     options.prList.each do |prID|
       puts "Getting SARIF report(s) for PR ##{prID} in https://github.com/#{options.owner}/#{options.repo}:"
       prInfo = client.get("/repos/#{options.owner}/#{options.repo}/pulls/#{prID}")
@@ -208,12 +207,12 @@ begin
           begin
             uri = URI.parse("#{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{analysis.id}")
             request = Net::HTTP::Get.new(uri)
-            request.basic_auth("dummy", "#{GITHUB_PAT}")
-            request["Accept"] = "application/vnd.github.v3+json"
-            request["Accept"] = "application/sarif+json"
+            request.basic_auth('dummy', "#{GITHUB_PAT}")
+            request['Accept'] = 'application/vnd.github.v3+json'
+            request['Accept'] = 'application/sarif+json'
 
             req_options = {
-            use_ssl: uri.scheme == "https",
+            use_ssl: uri.scheme == 'https',
             }
 
             response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
@@ -222,7 +221,7 @@ begin
             begin
               puts "  Report does not exist for #{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{analysis.id}"
               next
-            end if response.code != "200"
+            end if response.code != '200'
             puts "  Opening File pr_#{prID}_analysis_#{analysis.id}.sarif for writing"
             # f = File.new('pr_'+prID+'_analysis_'+analysis.id+'.sarif', 'w')
             f = File.new('pr_'+prID+'_analysis_' + analysis.id.to_s + '.sarif', 'w')
@@ -242,7 +241,7 @@ begin
   end
 
 rescue Octokit::Unauthorized
-  puts "Bad Credentials - is your GITHUB_PAT ok?"
+  puts 'Bad Credentials - is your GITHUB_PAT ok?'
   exit 1
 rescue Octokit::NotFound
   puts "Could not find the needed data - is https://github.com/#{options.owner}/#{options.repo} the correct repository, or do you have the correct PR/Analysis IDs?"
@@ -251,18 +250,18 @@ rescue Octokit::Forbidden
   puts "Code Scanning has not been enabled for https://github.com/#{options.owner}/#{options.repo}"
   exit 1
 rescue Octokit::ServerError
-  puts "It appears the service is currently not available - please try again later. You can check https://www.githubstatus.com/ for operational details"
+  puts 'It appears the service is currently not available - please try again later. You can check https://www.githubstatus.com/ for operational details'
   exit 1
 rescue Octokit::ClientError => ex
-  puts "There is an Octokit Client Error we do not have a specific message for yet"
+  puts 'There is an Octokit Client Error we do not have a specific message for yet'
   puts ex
   exit 1
 rescue Octokit::Error => ex
-  puts "There is a Octokit Error we do not have a specific message for yet"
+  puts 'There is a Octokit Error we do not have a specific message for yet'
   puts ex
   exit 1
 rescue StandardError => ex
-  puts "There is a Standard Error we do not have a specific message for yet"
+  puts 'There is a Standard Error we do not have a specific message for yet'
   puts ex
   exit 1
 end
