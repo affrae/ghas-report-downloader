@@ -182,29 +182,27 @@ begin
     puts 'Getting reports...'
     options.report_list.each do |report_id|
       puts "  Getting SARIF report with ID #{report_id}..."
-      begin
-        uri = URI.parse("#{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{report_id}")
-        request = Net::HTTP::Get.new(uri)
-        request.basic_auth('dummy', GITHUB_PAT.to_s)
-        request['Accept'] = 'application/vnd.github.v3+json'
-        request['Accept'] = 'application/sarif+json'
+      uri = URI.parse("#{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{report_id}")
+      request = Net::HTTP::Get.new(uri)
+      request.basic_auth('dummy', GITHUB_PAT.to_s)
+      request['Accept'] = 'application/vnd.github.v3+json'
+      request['Accept'] = 'application/sarif+json'
 
-        req_options = {
-          use_ssl: uri.scheme == 'https'
-        }
+      req_options = {
+        use_ssl: uri.scheme == 'https'
+      }
 
-        response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
-          http.request(request)
-        end
-        unless response.code == '200'
-          puts "  Report does not exist for #{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{report_id}"
-          next
-        end
-        f = File.new("analysis_#{report_id}.sarif", 'w')
-        f.write(response.body)
-        puts "  Report Downloaded to analysis_#{report_id}.sarif"
-        f.close
+      response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+        http.request(request)
       end
+      unless response.code == '200'
+        puts "  Report does not exist for #{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{report_id}"
+        next
+      end
+      f = File.new("analysis_#{report_id}.sarif", 'w')
+      f.write(response.body)
+      puts "  Report Downloaded to analysis_#{report_id}.sarif"
+      f.close
     end
     puts '...done.'
 
