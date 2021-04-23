@@ -193,7 +193,7 @@ begin
         f = File.new('analysis_'+report_id+'.sarif', 'w')
         f.write(response.body)
         puts '  Report Downloaded to analysis_'+report_id+'.sarif'
-        f.close()
+        f.close
       end
     end
     puts '...done.'
@@ -231,7 +231,7 @@ begin
             f = File.new('pr_'+pr_id+'_analysis_' + analysis.id.to_s + '.sarif', 'w')
             # f = File.new('test.sarif', 'w')
             f.write(response.body)
-            f.close()
+            f.close
             puts "  Report Downloaded to pr_#{pr_id}_analysis_#{analysis.id}.sarif"
           end
         end
