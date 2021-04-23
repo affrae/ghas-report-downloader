@@ -15,7 +15,6 @@ require 'uri'
 class Optparse
   # the parse functionality for this class
   def self.parse(args)
-
     # The options specified on the command line will be collected in *options*.
     # We set default values here.
 
