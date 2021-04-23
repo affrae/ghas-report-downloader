@@ -251,7 +251,6 @@ begin
       next
     end
   end
-
 rescue Octokit::Unauthorized
   puts 'Bad Credentials - is your GITHUB_PAT ok?'
   exit 1
