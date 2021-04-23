@@ -97,8 +97,8 @@ class Optparse
       mandatory_missing << '-o OWNER' if options[:owner].nil?
       mandatory_missing << '-r REPO' if options[:repo].nil?
       raise OptionParser::MissingArgument, mandatory_missing.join(' ') unless mandatory_missing.empty?
-    rescue OptionParser::ParseError => ex
-      puts ex
+    rescue OptionParser::ParseError => e
+      puts e
       puts opt_parser
       exit 1
     end
@@ -261,16 +261,16 @@ rescue Octokit::Forbidden
 rescue Octokit::ServerError
   puts 'It appears the service is currently not available - please try again later. You can check https://www.githubstatus.com/ for operational details'
   exit 1
-rescue Octokit::ClientError => ex
+rescue Octokit::ClientError => e
   puts 'There is an Octokit Client Error we do not have a specific message for yet'
-  puts ex
+  puts e
   exit 1
-rescue Octokit::Error => ex
+rescue Octokit::Error => e
   puts 'There is a Octokit Error we do not have a specific message for yet'
-  puts ex
+  puts e
   exit 1
-rescue StandardError => ex
+rescue StandardError => e
   puts 'There is a Standard Error we do not have a specific message for yet'
-  puts ex
+  puts e
   exit 1
 end
