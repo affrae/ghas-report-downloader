@@ -108,12 +108,12 @@ ghasrd.rb -o [OWNER] -r [REPO] -p 1257,2045
 - [x] User Input Data checking and sanitization
 - [x] Better details in the list reports function to help choose which report
 - [x] Download the report(s) using the `-g` option (listing report analysis IDs)
-- [ ] Download the report for the most recent commit to a Pull Request source branch using the `-p` option (listing Pull Request numbers )
+- [x] Download the report for the most recent commit to a Pull Request source branch using the `-p` option (listing Pull Request numbers )
 - [ ] Better docs
 
 ### Mid term
 
-- [ ] Verbose `-v` and `-V` levels sorted out
+- [ ] Verbose `-v` and `-V` levels sorted out (right now it is a little noisy)
 - [ ] Support for GitHub Enterprise Server
 - [ ] Support for GitHub AE
 
