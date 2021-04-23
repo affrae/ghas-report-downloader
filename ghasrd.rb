@@ -119,10 +119,10 @@ def show_wait_spinner(fps=30)
     print "\b"
     end
   end
-  yield.tap {
+  yield.tap do
     iter = false
     spinner.join
-  }
+  end
 end
 
 # begin ... end defines code that needs to run on its own in its own context
@@ -160,7 +160,7 @@ begin
     width = 40
     table = Terminal::Table.new headings: ['ID', 'Tool','Commit SHA(7)', 'Commit date', 'Commit author', 'Commit message']
     table.style = { all_separators: true }
-    show_wait_spinner {
+    show_wait_spinner do
       analyses = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
 
       analyses.each do |analysis|
@@ -174,7 +174,7 @@ begin
           commit_info.message.length < width ? commit_info.message : "#{commit_info.message[0...(width - 4)]}..."
 ]
       end
-    }
+    end
     puts table
     puts ''
     puts "To get a report issue the command\n  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g [ID]\nwhere [ID] is the ID of the analysis you are interested in from the table above."
