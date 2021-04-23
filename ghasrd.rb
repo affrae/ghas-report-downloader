@@ -242,7 +242,7 @@ begin
           puts "  Report Downloaded to pr_#{pr_id}_analysis_#{analysis.id}.sarif"
         end
       end
-      puts "  No analyses found for SHA #{pr_info.head.sha} for PR ##{pr_id} in https://github.com/#{options.owner}/#{options.repo}" unless !required_analyses.empty?
+      puts "  No analyses found for SHA #{pr_info.head.sha} for PR ##{pr_id} in https://github.com/#{options.owner}/#{options.repo}" if required_analyses.empty?
     rescue Octokit::NotFound
       puts "  Could not find the needed data - is https://github.com/#{options.owner}/#{options.repo} the correct repository, or do you have the correct PR number?"
       next
