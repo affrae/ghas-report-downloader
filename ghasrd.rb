@@ -35,7 +35,9 @@ class Optparse
       opts.on('-o', '--owner OWNER', '(Required) the OWNER of the repository') do |owner|
         unless owner.match('^([a-z0-9])(?!.*--)([a-z0-9-])*([a-z0-9])$')
           raise OptionParser::InvalidArgument,
-                "OWNER may only contain alphanumeric characters or single hyphens, and cannot begin or end with a hyphen. '#{owner}' fails this test!"
+                'OWNER may only contain alphanumeric characters or single hyphens,' \
+                ' and cannot begin or end with a hyphen.' \
+                " '#{owner}' fails this test!"
         end
 
         options.owner = owner
