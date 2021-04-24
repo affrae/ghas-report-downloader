@@ -215,10 +215,12 @@ begin
     end
     puts table
     puts ''
-    puts "To get an report issue the command\n  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g [ID]"
+    puts 'To get an report issue the command:'
+    puts "  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g [ID]"
     puts 'where [ID] is the ID of the analysis report you are interested in from the table above.'
     unless rows.empty?
-      puts "\nFor example:\n  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g #{rows[rows.length - 1][0]}"
+      puts 'For example:'
+      puts "  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g #{rows[rows.length - 1][0]}"
       puts 'to get the last report on that table'
     end
 
