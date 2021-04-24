@@ -73,10 +73,10 @@ class Optparse
       # get or grab one or more reports listed by ID
 
       opts.on('-g x,y,z', '--get x,y,z', '--grab x,y,z', Array,
-              'Get one or more reports by the Analysis ID.') do |report_list|
+              'Get one or more reports by the Analysis Report ID.') do |report_list|
         unless report_list.all? { |i| i.match('^([0-9])*$') }
           raise OptionParser::InvalidArgument,
-                "Analysis ID lists may only contain numbers. '#{report_list.join(',')}' fails this test!"
+                "Analysis Report ID lists may only contain numbers. '#{report_list.join(',')}' fails this test!"
         end
 
         options.report_list = report_list
@@ -136,6 +136,33 @@ def show_wait_spinner(fps = 30)
   end
 end
 
+def get_report(options, report, file_name)
+  puts "  Getting SARIF report with ID #{report}..."
+  uri = URI.parse("#{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{report}")
+  request = Net::HTTP::Get.new(uri)
+  request.basic_auth('dummy', GITHUB_PAT.to_s)
+  request['Accept'] = 'application/vnd.github.v3+json'
+  request['Accept'] = 'application/sarif+json'
+
+  req_options = {
+    use_ssl: uri.scheme == 'https'
+  }
+
+  response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+    http.request(request)
+  end
+
+  unless response.code == '200'
+    puts "  Report does not exist for #{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{report}"
+    return
+  end
+
+  f = File.new(file_name, 'w')
+  f.write(response.body)
+  puts "  Report Downloaded to #{file_name}"
+  f.close
+end
+
 # begin ... end defines code that needs to run on its own in its own context
 # rescue gives a block to execute if an error occurs during runtime.
 # it functions to handle exceptions, and takes a single argument: the class/type of error that you want to rescue from.
@@ -166,22 +193,22 @@ end
 begin
   case options.command
   when 'list'
-    puts "Listing available reports for https://github.com/#{options.owner}/#{options.repo}..."
+    print "Listing available reports for https://github.com/#{options.owner}/#{options.repo}..."
     rows = []
     width = 40
     table = Terminal::Table.new headings: ['ID', 'Tool', 'Commit SHA(7)', 'Commit date', 'Commit author',
                                            'Commit message']
     table.style = { all_separators: true }
     show_wait_spinner do
-      analyses = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
+      reports = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
 
-      analyses.each do |analysis|
-        commit_info = client.get("/repos/#{options.owner}/#{options.repo}/git/commits/#{analysis.commit_sha}")
+      reports.each do |report|
+        commit_info = client.get("/repos/#{options.owner}/#{options.repo}/git/commits/#{report.commit_sha}")
         table.add_row [
-          analysis.id,
-          analysis.tool.name,
-          analysis.commit_sha[0..6],
-          analysis.created_at,
+          report.id,
+          report.tool.name,
+          report.commit_sha[0..6],
+          report.created_at,
           commit_info.author.name,
           commit_info.message.length < width ? commit_info.message : "#{commit_info.message[0...(width - 4)]}..."
         ]
@@ -189,7 +216,7 @@ begin
     end
     puts table
     puts ''
-    puts "To get a report issue the command\n  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g [ID]\nwhere [ID] is the ID of the analysis you are interested in from the table above."
+    puts "To get an report issue the command\n  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g [ID]\nwhere [ID] is the ID of the analysis report you are interested in from the table above."
     unless rows.empty?
       puts "\nFor example:\n  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g #{rows[rows.length - 1][0]}"
       puts 'to get the last report on that table'
@@ -197,29 +224,8 @@ begin
 
   when 'get'
     puts 'Getting reports...'
-    options.report_list.each do |report_id|
-      puts "  Getting SARIF report with ID #{report_id}..."
-      uri = URI.parse("#{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{report_id}")
-      request = Net::HTTP::Get.new(uri)
-      request.basic_auth('dummy', GITHUB_PAT.to_s)
-      request['Accept'] = 'application/vnd.github.v3+json'
-      request['Accept'] = 'application/sarif+json'
-
-      req_options = {
-        use_ssl: uri.scheme == 'https'
-      }
-
-      response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
-        http.request(request)
-      end
-      unless response.code == '200'
-        puts "  Report does not exist for #{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{report_id}"
-        next
-      end
-      f = File.new("analysis_#{report_id}.sarif", 'w')
-      f.write(response.body)
-      puts "  Report Downloaded to analysis_#{report_id}.sarif"
-      f.close
+    options.report_list.each do |report|
+      get_report(options, report, "analysis_#{report}.sarif")
     end
     puts '...done.'
 
@@ -228,37 +234,16 @@ begin
       puts "Getting SARIF report(s) for PR ##{pr_id} in https://github.com/#{options.owner}/#{options.repo}:"
       pr_info = client.get("/repos/#{options.owner}/#{options.repo}/pulls/#{pr_id}")
       puts "  HEAD is #{pr_info.head.sha}"
-      analyses = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
-      required_analyses = analyses.select { |analysis| analysis.commit_sha == pr_info.head.sha }
-      unless required_analyses.empty?
-        required_analyses.each do |analysis|
-          puts "  Found Report #{analysis.id}"
-          uri = URI.parse("#{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{analysis.id}")
-          request = Net::HTTP::Get.new(uri)
-          request.basic_auth('dummy', GITHUB_PAT.to_s)
-          request['Accept'] = 'application/vnd.github.v3+json'
-          request['Accept'] = 'application/sarif+json'
-
-          req_options = {
-            use_ssl: uri.scheme == 'https'
-          }
-          response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
-            http.request(request)
-          end
-          if response.code != '200'
-            puts '  Report does not exist for'
-            puts "  #{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{analysis.id}"
-            next
-          end
-          puts "  Opening File pr_#{pr_id}_analysis_#{analysis.id}.sarif for writing"
-          f = File.new("pr_#{pr_id}_analysis_#{analysis.id}.sarif", 'w')
-          f.write(response.body)
-          f.close
-          puts "  Report Downloaded to pr_#{pr_id}_analysis_#{analysis.id}.sarif"
+      reports = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
+      report_list = reports.select { |report| report.commit_sha == pr_info.head.sha }
+      unless report_list.empty?
+        report_list.each do |report|
+          puts "  Found Report #{report.id}"
+          get_report(options, report.id, "pr_#{pr_id}_analysis_#{report.id}.sarif")
         end
       end
-      if required_analyses.empty?
-        puts "  No analyses found for SHA #{pr_info.head.sha} for PR ##{pr_id} in https://github.com/#{options.owner}/#{options.repo}"
+      if report_list.empty?
+        puts "  No analysis reports found for SHA #{pr_info.head.sha} for PR ##{pr_id} in https://github.com/#{options.owner}/#{options.repo}"
       end
     rescue Octokit::NotFound
       puts "  Could not find the needed data - is https://github.com/#{options.owner}/#{options.repo}"
@@ -271,7 +256,7 @@ rescue Octokit::Unauthorized
   exit 1
 rescue Octokit::NotFound
   puts "Could not find the needed data - is https://github.com/#{options.owner}/#{options.repo} the correct repository,"
-  puts 'or do you have the correct PR/Analysis IDs?'
+  puts 'or do you have the correct PR and/or Analysis Report IDs?'
   exit 1
 rescue Octokit::Forbidden
   puts "Code Scanning has not been enabled for https://github.com/#{options.owner}/#{options.repo}"
