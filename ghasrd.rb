@@ -155,16 +155,15 @@ def get_uri(uri, token)
     use_ssl: uri.scheme == 'https'
   }
 
-  response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+  Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
     http.request(request)
   end
 end
 
 def get_report(options, report, file_name)
   puts "  Getting SARIF report with ID #{report}..."
-  uri = URI.parse("#{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{report}")
 
-  response = get_uri(uri,GITHUB_PAT)
+  response = get_uri(URI.parse("#{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{report}"),GITHUB_PAT)
 
   unless response.code == '200'
     puts '  Report does not exist for:'
@@ -172,10 +171,9 @@ def get_report(options, report, file_name)
     return
   end
 
-  f = File.new(file_name, 'w')
-  f.write(response.body)
+  File.open(file_name, 'w') {|f| f.write(response.body) }
+
   puts "  Report Downloaded to #{file_name}"
-  f.close
 end
 
 # Main
