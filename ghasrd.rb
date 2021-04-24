@@ -172,13 +172,7 @@ end
 # if an environment variable does not exist, execute the code in the rescue block and exit status 1
 # in a shell script a non-zero exit value means it is an error
 
-begin
-  GITHUB_PAT = ENV.fetch('GITHUB_PAT')
-rescue KeyError
-  warn 'To be able to run this script, you are required to set the following environment variables:'
-  warn '- GITHUB_PAT: A Personal Access Token (PAT) for your account'
-  exit 1
-end
+GITHUB_PAT = ENV.fetch('GITHUB_PAT')
 
 client = Octokit::Client.new access_token: GITHUB_PAT
 client.auto_paginate = true
@@ -251,6 +245,10 @@ begin
       next
     end
   end
+rescue KeyError
+  warn 'To be able to run this script, you are required to set the following environment variables:'
+  warn '- GITHUB_PAT: A Personal Access Token (PAT) for your account'
+  exit 1
 rescue Octokit::Unauthorized
   puts 'Bad Credentials - is your GITHUB_PAT ok?'
   exit 1
