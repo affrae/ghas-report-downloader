@@ -163,17 +163,18 @@ end
 def get_report(options, report, file_name)
   puts "  Getting SARIF report with ID #{report}..."
 
-  response = get_uri(URI.parse("#{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{report}"),GITHUB_PAT)
+  response = get_uri(
+    URI.parse("#{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{report}"),
+    GITHUB_PAT
+  )
 
   unless response.code == '200'
-    puts '  Report does not exist for:'
-    puts "    #{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{report}"
+    puts '  Report does not exist for:'\
+         "#{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{report}"
     return
   end
 
-  File.open(file_name, 'w') {|f| f.write(response.body) }
-
-  puts "  Report Downloaded to #{file_name}"
+  File.open(file_name, 'w') { |f| f.write(response.body); puts "  Report Downloaded to #{file_name}" }
 end
 
 # Main
