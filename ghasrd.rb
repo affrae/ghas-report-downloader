@@ -60,8 +60,10 @@ class Optparse
 
       # get or grab one or more PR reports
 
-      opts.on('-p x,y,z', '--pr x,y,z', Array,
-              'Get reports for the most recent commit on the source branch for each of the listed Pull Request numbers') do |pr_list|
+      opts.on('-p x,y,z', '--pr x,y,z',
+              Array,
+              'Get reports for the most recent commit on the source branch for each of the listed Pull Request numbers'
+             ) do |pr_list|
         unless pr_list.all? { |i| i.match('^([0-9])*$') }
           raise OptionParser::InvalidArgument,
                 "Pull Request Item lists may only contain numbers. '#{pr_list.join(',')}' fails this test!"
@@ -156,7 +158,8 @@ def get_report(options, report, file_name)
   end
 
   unless response.code == '200'
-    puts "  Report does not exist for #{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{report}"
+    puts '  Report does not exist for:'
+    puts "    #{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{report}"
     return
   end
 
