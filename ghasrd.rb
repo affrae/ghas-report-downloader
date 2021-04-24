@@ -145,11 +145,9 @@ def show_wait_spinner(fps = 30)
   end
 end
 
-def get_report(options, report, file_name)
-  puts "  Getting SARIF report with ID #{report}..."
-  uri = URI.parse("#{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{report}")
+def get_uri(uri, token)
   request = Net::HTTP::Get.new(uri)
-  request.basic_auth('dummy', GITHUB_PAT)
+  request.basic_auth('dummy', token)
   request['Accept'] = 'application/vnd.github.v3+json'
   request['Accept'] = 'application/sarif+json'
 
@@ -160,6 +158,13 @@ def get_report(options, report, file_name)
   response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
     http.request(request)
   end
+end
+
+def get_report(options, report, file_name)
+  puts "  Getting SARIF report with ID #{report}..."
+  uri = URI.parse("#{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{report}")
+
+  response = get_uri(uri,GITHUB_PAT)
 
   unless response.code == '200'
     puts '  Report does not exist for:'
