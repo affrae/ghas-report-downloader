@@ -121,6 +121,7 @@ class Optparse
 end
 
 # Utility Methods
+
 def show_wait_spinner(fps = 30)
   chars = %w[| / - \\]
   delay = 1.0 / fps
@@ -142,7 +143,7 @@ def get_report(options, report, file_name)
   puts "  Getting SARIF report with ID #{report}..."
   uri = URI.parse("#{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{report}")
   request = Net::HTTP::Get.new(uri)
-  request.basic_auth('dummy', GITHUB_PAT.to_s)
+  request.basic_auth('dummy', GITHUB_PAT)
   request['Accept'] = 'application/vnd.github.v3+json'
   request['Accept'] = 'application/sarif+json'
 
