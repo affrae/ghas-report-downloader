@@ -13,6 +13,7 @@ require 'uri'
 
 # Get command Line options using docs @ https://ruby-doc.org/stdlib-3.0.1/libdoc/optparse/rdoc/OptionParser.html
 
+# Class Optparse
 # Parses the command line options
 class Optparse
   # the parse functionality for this class
@@ -119,6 +120,7 @@ class Optparse
   end
 end
 
+# Utility Methods
 def show_wait_spinner(fps = 30)
   chars = %w[| / - \\]
   delay = 1.0 / fps
@@ -162,6 +164,8 @@ def get_report(options, report, file_name)
   puts "  Report Downloaded to #{file_name}"
   f.close
 end
+
+# Main
 
 # begin ... end defines code that needs to run on its own in its own context
 # rescue gives a block to execute if an error occurs during runtime.
