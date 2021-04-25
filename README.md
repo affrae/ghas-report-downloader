@@ -111,7 +111,7 @@ ghasrd.rb -o [OWNER] -r [REPO] -p 1257,2045
 - [x] Better details in the list reports function to help choose which report
 - [x] Download the report(s) using the `-g` option (listing report analysis IDs)
 - [x] Download the report(s) for the most recent commit to a Pull Request source branch using the `-p` option (listing Pull Request numbers )
-- [ ] Download the report(s) for a given Commit SHA
+- [ ] Download the report(s) for a given Commit SHA or list of Commit SHAs
 - [ ] Better docs
 
 ### Mid term
