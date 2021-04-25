@@ -101,7 +101,7 @@ class Optparse
         'as long as that partial hash is at least four characters long and unambiguous -',
         'that is, no other commit can have a hash that begins with the same prefix.'
       ) do |sha_list|
-        unless sha_list.all? { |i| i.match('^([0-9a-z])*$') && 4 <= i.length && i.length <= 40}
+        unless sha_list.all? { |i| i.match('^([0-9a-z])*$') && i.length >= 4 && i.length <= 40 }
           raise OptionParser::InvalidArgument,
                 'Listed SHAs should be 4 - 40 characters long and may only contain numbers and lowercase letters. '\
                 "#{sha_list.join(',')}' fails this test!"
@@ -292,7 +292,6 @@ begin
     end
     puts '...done.'
   end
-
 rescue KeyError
   warn 'To be able to run this script, you are required to set the following environment variables:'
   warn '- GITHUB_PAT: A Personal Access Token (PAT) for your account'
