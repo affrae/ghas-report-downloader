@@ -32,7 +32,7 @@ class Optparse
       opts.separator ''
       opts.separator 'Mandatory options:'
 
-      opts.on('-o', '--owner OWNER', '(Required) the OWNER of the repository') do |owner|
+      opts.on('-o', '--owner OWNER', 'The owner of the repository') do |owner|
         unless owner.match('^([a-z0-9])(?!.*--)([a-z0-9-])*([a-z0-9])$')
           raise OptionParser::InvalidArgument,
                 'OWNER may only contain alphanumeric characters or single hyphens,' \
@@ -43,7 +43,7 @@ class Optparse
         options.owner = owner
       end
 
-      opts.on('-r', '--repo REPO', '(Required) a REPO to query') do |repo|
+      opts.on('-r', '--repo REPO', 'The repository to query') do |repo|
         unless repo.match('^[a-z0-9-]*$')
           raise OptionParser::InvalidArgument,
                 "REPO may only contain alphanumeric characters or hyphens. '#{repo}' fails this test!"
@@ -70,7 +70,7 @@ class Optparse
       ) do |pr_list|
         unless pr_list.all? { |i| i.match('^([0-9])*$') }
           raise OptionParser::InvalidArgument,
-                "Pull Request Item lists may only contain numbers. '#{pr_list.join(',')}' fails this test!"
+                "Pull Request IDs may only contain numbers. '#{pr_list.join(',')}' fails this test!"
         end
 
         options.pr_list = pr_list
@@ -83,11 +83,32 @@ class Optparse
               'Get one or more reports by the Analysis Report ID.') do |report_list|
         unless report_list.all? { |i| i.match('^([0-9])*$') }
           raise OptionParser::InvalidArgument,
-                "Analysis Report ID lists may only contain numbers. '#{report_list.join(',')}' fails this test!"
+                "Analysis Report IDs lists may only contain numbers. '#{report_list.join(',')}' fails this test!"
         end
 
         options.report_list = report_list
         options.command = 'get'
+      end
+
+      # get or grab one or more reports listed by SHA
+
+      opts.on(
+        '-s x,y,z',
+        '--sha x,y,z',
+        Array,
+        'Get reports for each of the listed Commit SHAs (To be implemented)',
+        'We can figure out what commit you’re referring to if you provide the first few characters of the SHA-1 hash,',
+        'as long as that partial hash is at least four characters long and unambiguous -',
+        'that is, no other commit can have a hash that begins with the same prefix.'
+      ) do |sha_list|
+        unless sha_list.all? { |i| i.match('^([0-9a-z])*$') && 4 <= i.length && i.length <= 40}
+          raise OptionParser::InvalidArgument,
+                'Listed SHAs should be 4 - 40 characters long and may only contain numbers and lowercase letters. '\
+                "#{sha_list.join(',')}' fails this test!"
+        end
+
+        options.sha_list = sha_list
+        options.command = 'sha'
       end
 
       # Run verbosely
@@ -263,7 +284,15 @@ begin
       puts '  the correct repository, or do you have the correct PR number?'
       next
     end
+
+  when 'sha'
+    puts 'Getting reports...'
+    options.sha_list.each do |sha|
+      puts "#{sha}: To be implemented"
+    end
+    puts '...done.'
   end
+
 rescue KeyError
   warn 'To be able to run this script, you are required to set the following environment variables:'
   warn '- GITHUB_PAT: A Personal Access Token (PAT) for your account'
