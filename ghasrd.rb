@@ -203,7 +203,7 @@ end
 begin
   case options.command
   when 'list'
-    print "Listing available reports for https://github.com/#{options.owner}/#{options.repo}..."
+    print "Getting a list of available reports for https://github.com/#{options.owner}/#{options.repo}..."
     rows = []
     width = 40
     table = Terminal::Table.new headings: ['ID', 'Tool', 'Commit SHA(7)', 'Commit date', 'Commit author',
@@ -224,14 +224,15 @@ begin
         ]
       end
     end
+    puts "done."
     puts table
     puts ''
     puts 'To get an report issue the command:'
     puts "  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g [ID]"
     puts 'where [ID] is the ID of the analysis report you are interested in from the table above.'
-    unless rows.empty?
+    unless table.rows.empty?
       puts 'For example:'
-      puts "  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g #{rows[rows.length - 1][0]}"
+      puts "  #{$PROGRAM_NAME} -o #{options.owner} -r #{options.repo} -g #{table.rows[table.rows.length - 1][0]}"
       puts 'to get the last report on that table'
     end
 
@@ -276,6 +277,7 @@ rescue Octokit::NotFound
   puts 'or do you have the correct PR and/or Analysis Report IDs?'
   exit 1
 rescue Octokit::Forbidden
+  puts '\bError!'
   puts "Code Scanning has not been enabled for https://github.com/#{options.owner}/#{options.repo}"
   exit 1
 rescue Octokit::ServerError
