@@ -117,6 +117,7 @@ ghasrd.rb -o [OWNER] -r [REPO] -p 1257,2045
 ### Mid term
 
 - [ ] Verbose `-v` and `-V` levels sorted out (right now it is a little noisy)
+- [ ] Implement a unit testing framework
 - [ ] Support for GitHub Enterprise Server
 - [ ] Support for GitHub Æ
 
