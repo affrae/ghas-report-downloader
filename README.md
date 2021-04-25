@@ -24,8 +24,8 @@ bundle install
 ### Listing available reports
 
 ``` zsh
-➜  ghas-report-downloader git:(main) ./ghasrd.rb -l -o affrae -r quickjavahelloworldmultimodule
-Listing available reports for https://github.com/affrae/quickjavahelloworldmultimodule...
+➜  ghas-report-downloader git:(main) ./ghasrd.rb -o affrae -r quickjavahelloworldmultimodule -l        
+Getting a list of available reports for https://github.com/affrae/quickjavahelloworldmultimodule...done.
 +---------+--------+---------------+-------------------------+-----------------+-----------------------------------------+
 | ID      | Tool   | Commit SHA(7) | Commit date             | Commit author   | Commit message                          |
 +---------+--------+---------------+-------------------------+-----------------+-----------------------------------------+
@@ -68,9 +68,12 @@ Listing available reports for https://github.com/affrae/quickjavahelloworldmulti
 | 5876116 | CodeQL | 1f14ad5       | 2021-04-01 05:21:38 UTC | Daniel Figucio  | Create codeql-analysis.yml              |
 +---------+--------+---------------+-------------------------+-----------------+-----------------------------------------+
 
-To get a report issue the command
+To get an report issue the command:
   ./ghasrd.rb -o affrae -r quickjavahelloworldmultimodule -g [ID]
-where [ID] is the ID of the analysis you are interested in from the table above.                                                                                                                                                                                                                                                               /6.1s
+where [ID] is the ID of the analysis report you are interested in from the table above.
+For example:
+  ./ghasrd.rb -o affrae -r quickjavahelloworldmultimodule -g  5876116 
+to get the last report on that table                                                                                                                 /6.2s
 ➜  ghas-report-downloader git:(main) 
 ```
 
