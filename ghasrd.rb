@@ -223,7 +223,7 @@ begin
         ]
       end
     end
-    puts "done."
+    puts 'done.'
     puts table
     puts ''
     puts 'To get an report issue the command:'
