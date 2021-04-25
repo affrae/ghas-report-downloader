@@ -204,7 +204,6 @@ begin
   case options.command
   when 'list'
     print "Getting a list of available reports for https://github.com/#{options.owner}/#{options.repo}..."
-    rows = []
     width = 40
     table = Terminal::Table.new headings: ['ID', 'Tool', 'Commit SHA(7)', 'Commit date', 'Commit author',
                                            'Commit message']
