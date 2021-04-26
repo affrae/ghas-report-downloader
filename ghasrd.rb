@@ -57,10 +57,6 @@ class Optparse
       opts.separator 'Specific options:'
 
       # GHES Support
-      opts.on('-a hostname', '--api hostname', 'Use GitHub Enterprise Server API api (https://[hostname]/api/v3)') do |hostname|
-        options.api = "https://#{hostname}/api/v3"
-        options.hostname = hostname
-      end
 
       # List the reports available
       opts.on('-l', '--list', 'List available reports') do
@@ -222,7 +218,6 @@ if options.extraVerbose
 end
 
 begin
-
   GITHUB_PAT = ENV.fetch('GITHUB_PAT')
 
   Octokit.configure do |c|
