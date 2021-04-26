@@ -112,6 +112,8 @@ ghasrd.rb -o [OWNER] -r [REPO] -g 5876671,5876116
 
 ```
 
+Files are stored in the format `analysis_[ID].sarif`
+
 #### By Pull Request Number (PR)
 
 If you know the number of a PR (or multiple PRs), you can use the following command to download the code scanning reports for the HEAD sha of each PR:
@@ -123,6 +125,8 @@ ghasrd.rb -o [OWNER] -r [REPO] -p 2045
 # multiple
 ghasrd.rb -o [OWNER] -r [REPO] -p 1257,2045
 ```
+
+Files are stored in the format `pr_[PR#]_analysis_[ID].sarif`
 
 #### By commit SHA
 
@@ -137,6 +141,8 @@ ghasrd.rb -o [OWNER] -r [REPO] -s 9128b15,7b1eccd
 ```
 
 We can figure out what commit you’re referring to _if you provide as few as the the first four characters of the `SHA-1` hash_, as long as that partial hash is  unambiguous - that is, no other commit can have a hash that begins with the same prefix. This means you do not need to enter all 40 characters of every SHA-1 hash you are after :smiling_imp:&nbsp;.
+
+Files are stored in the format `sha_[SHA]_analysis_[ID].sarif`
 
 ## To Be Done
 
