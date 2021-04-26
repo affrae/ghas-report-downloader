@@ -329,8 +329,8 @@ rescue Octokit::Unauthorized
   warn 'Bad Credentials - is your GITHUB_PAT ok?'
   exit 1
 rescue Octokit::NotFound
-  warn "Could not find the needed data - is https://#{options.hostname}/#{options.owner}/#{options.repo} the correct repository,"
-  warn 'or do you have the correct PR and/or Analysis Report IDs?'
+  warn "Could not find the needed data - is https://#{options.hostname}/#{options.owner}/#{options.repo}"
+  warn ' the correct repository, or do you have the correct PR and/or Analysis Report IDs?'
   exit 1
 rescue Octokit::Forbidden
   warn '\bError!'
