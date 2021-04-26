@@ -23,7 +23,7 @@ To run this script, please set the following environment variables:
 bundle install
 ```
 
-- Place the `ghasrd.rb` script in your $PATH, make sure it is executable
+- Place the `ghasrd.rb` script in your $PATH, make sure it is executable.
 - Hop into the root directory of your repository and issue the `ghasrd.rb` command with appropriate options (detailed below).
 
 ### Filenames and `.gitignore`
@@ -35,7 +35,14 @@ The downloaded files are of the filename formats:
 - `sha_[SHA]_analysis_[ID].sarif`
 
 you can add an appropriate pattern to your `.gitignore` file to stop them being pushed to the GitHub repository.
+
 ### Listing available reports
+
+``` zsh
+ghasrd.rb -o [OWNER] -r [REPO] -l
+```
+
+#### Sample output
 
 ``` zsh
 ➜  ghas-report-downloader git:(main) ./ghasrd.rb -o affrae -r quickjavahelloworldmultimodule -l        
