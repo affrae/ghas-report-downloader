@@ -1,6 +1,6 @@
 # GitHub Code Scanning Report Downloader
 
-`ghasrd.rb` lists code scanning SARIF reports for a given repository and allows the user to identify and download these reports.
+`ghasrd.rb` lists code scanning SARIF reports for a given GitHub hosted repository and allows the user to identify and download these reports.
 
 Reports will be downloaded in a standard `.sarif` format and can be viewed in a IDE's SARIF viewer plugin
 
