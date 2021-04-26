@@ -328,15 +328,15 @@ rescue Octokit::ServerError
   warn 'You can check https://www.githubstatus.com/ for operational details'
   exit 1
 rescue Octokit::ClientError => e
-  warn 'There is an Octokit Client Error we do not have a specific message for yet'
+  warn 'There is an Octokit Client Error we do not have a specific rescue for yet'
   warn e
   exit 1
 rescue Octokit::Error => e
-  warn 'There is a Octokit Error we do not have a specific message for yet'
+  warn 'There is a Octokit Error we do not have a specific rescue for yet'
   warn e
   exit 1
 rescue StandardError => e
-  warn 'There is a Standard Error we do not have a specific message for yet'
+  warn 'There is a Standard Error we do not have a specific rescue for yet'
   warn e
   exit 1
 end
