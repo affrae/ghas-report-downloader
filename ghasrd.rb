@@ -58,7 +58,7 @@ class Optparse
 
       # GHES Support
       opts.on('-a hostname', '--apihost hostname', 'Use GitHub Enterprise Server API api at https://[hostname]/api/v3 (just provide hostname)') do |hostname|
-        unless ((hostname == 'github.com') or (hostname == 'api.github.com') )
+        unless (hostname == 'github.com') || (hostname == 'api.github.com')
           options.api = "https://#{hostname}/api/v3"
           options.hostname = hostname
         end
