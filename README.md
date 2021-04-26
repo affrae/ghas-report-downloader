@@ -115,7 +115,7 @@ ghasrd.rb -o [OWNER] -r [REPO] -s 9128b15
 ghasrd.rb -o [OWNER] -r [REPO] -s 9128b15,7b1eccd
 ```
 
-We can figure out what commit you’re referring to _if you provide as few as the the first four characters of the `SHA-1` hash_, as long as that partial hash is  unambiguous - that is, no other commit can have a hash that begins with the same prefix.
+We can figure out what commit you’re referring to _if you provide as few as the the first four characters of the `SHA-1` hash_, as long as that partial hash is  unambiguous - that is, no other commit can have a hash that begins with the same prefix. Thsi means you do not need to enter all 40 characters of a SHA-1 hash :smiling_imp:.
 
 ## To Be Done
 
