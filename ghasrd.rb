@@ -224,7 +224,6 @@ if options.extraVerbose
 end
 
 begin
-
   GITHUB_PAT = ENV.fetch('GITHUB_PAT')
 
   Octokit.configure do |c|
