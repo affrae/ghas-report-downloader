@@ -338,7 +338,7 @@ rescue Octokit::Forbidden
   exit 1
 rescue Octokit::ServerError
   warn 'It appears the service is currently not available - please try again later.'
-  warn 'You can check https://www.githubstatus.com/ for operational details' unless options.hostname != "github.com"
+  warn 'You can check https://www.githubstatus.com/ for operational details' unless options.hostname != 'github.com'
   exit 1
 rescue Octokit::ClientError => e
   warn 'There is an Octokit Client Error we do not have a specific rescue for yet'
