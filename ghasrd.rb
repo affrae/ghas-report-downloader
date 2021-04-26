@@ -24,8 +24,8 @@ class Optparse
     options = OpenStruct.new
     options.verbose = false
     options.extraVerbose = false
-    options.api = "https://api.github.com"
-    options.hostname = "github.com"
+    options.api = 'https://api.github.com'
+    options.hostname = 'github.com'
 
     opt_parser = OptionParser.new do |opts|
       opts.banner = "Usage: #{$PROGRAM_NAME} [options]"
@@ -220,26 +220,20 @@ end
 
 options = Optparse.parse(ARGV)
 
-if options.extraVerbose
-  pp options
-end
+pp options if options.extraVerbose
 
 begin
   GITHUB_PAT = ENV.fetch('GITHUB_PAT')
 
   Octokit.configure do |c|
     c.api_endpoint = options.api
-    if options.extraVerbose
-      puts "Connecting to #{c.api_endpoint}"
-    end
+    puts "Connecting to #{c.api_endpoint}" if options.extraVerbose
   end
 
   client = Octokit::Client.new access_token: GITHUB_PAT
   client.auto_paginate = true
 
-  if options.extraVerbose
-    puts "Running as @#{client.user.login}"
-  end
+  puts "Running as @#{client.user.login}" if options.extraVerbose
 
   case options.command
   when 'list'
