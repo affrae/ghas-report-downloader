@@ -211,16 +211,15 @@ end
 
 options = Optparse.parse(ARGV)
 
-if options.extraVerbose
-  pp options
-  puts "Running as @#{client.user.login}"
-end
+if options.extraVerbose pp options
 
 begin
   GITHUB_PAT = ENV.fetch('GITHUB_PAT')
 
   client = Octokit::Client.new access_token: GITHUB_PAT
   client.auto_paginate = true
+
+  if options.extraVerbose puts "Running as @#{client.user.login}"
 
   case options.command
   when 'list'
