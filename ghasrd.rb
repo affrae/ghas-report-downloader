@@ -229,8 +229,8 @@ begin
   end
 
   client = Octokit::Client.new access_token: GITHUB_PAT
-
   client.auto_paginate = true
+
   if options.extraVerbose puts "Running as @#{client.user.login}"
 
   case options.command
