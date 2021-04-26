@@ -124,7 +124,7 @@ class Optparse
       opts.on('-v', 'Run verbosely') do
         options.verbose = true
       end
-      
+
       # Run extra verbosely
       opts.on('-V', 'Run extra verbosely') do
         options.verbose = true
