@@ -77,9 +77,10 @@ to get the last report on that table                                            
 ➜  ghas-report-downloader git:(main) 
 ```
 
-## Downloading reports by analysis ID
+### Downloading reports
+### By analysis ID
 
-If you know the ID (or multiple IDs) for an analyis (you can get a list of IDs using the `-l` option), you can use the following command to download the report for that ID:
+If you know the ID (or multiple IDs) for an analyis (you can get a list of IDs using the `-l` option), you can use the following command to download the report for each ID:
 
 ``` shell
 # single
@@ -90,9 +91,9 @@ ghasrd.rb -o [OWNER] -r [REPO] -g 5876671,5876116
 
 ```
 
-### Download reports for a PR
+### By Pull Request Number (PR)
 
-If you know the number of a PR (or multiple PRs), you can use the following command to download the code scanning reports for the HEAD sha of that PR:
+If you know the number of a PR (or multiple PRs), you can use the following command to download the code scanning reports for the HEAD sha of each PR:
 
 ``` shell
 # single
@@ -102,9 +103,9 @@ ghasrd.rb -o [OWNER] -r [REPO] -p 2045
 ghasrd.rb -o [OWNER] -r [REPO] -p 1257,2045
 ```
 
-### Download reports for a SHA
+### By commit SHA
 
-If you know the number of a SHA (or multiple SHAs), you can use the following command to download the code scanning reports for that SHA:
+If you know the SHA of a commit (SHAs of multiple commits), you can use the following command to download the code scanning reports for each SHA:
 
 ``` shell
 # single
