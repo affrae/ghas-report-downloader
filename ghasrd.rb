@@ -225,18 +225,12 @@ begin
 
   Octokit.configure do |c|
     c.api_endpoint = options.api
-    if options.extraVerbose
-      puts "Connecting to #{c.api_endpoint}"
-    end
+    if options.extraVerbose puts "Connecting to #{c.api_endpoint}"
   end
 
   client = Octokit::Client.new access_token: GITHUB_PAT
 
   client.auto_paginate = true
-  if options.extraVerbose
-    puts "Running as @#{client.user.login}"
-  end
-
   if options.extraVerbose puts "Running as @#{client.user.login}"
 
   case options.command
