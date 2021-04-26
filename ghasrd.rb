@@ -103,8 +103,8 @@ class Optparse
       ) do |sha_list|
         unless sha_list.all? { |i| i.match('^([0-9a-z])*$') && i.length >= 4 && i.length <= 40 }
           raise OptionParser::InvalidArgument,
-                'Listed SHAs should be 4 - 40 characters long and may only contain numbers and lowercase letters. '\
-                "#{sha_list.join(',')}' fails this test!"
+                'Listed SHAs should be  < 40 characters long and may only contain numbers and lowercase letters. '\
+                "'#{sha_list.join(',')}' fails this test!"
         end
 
         options.sha_list = sha_list
@@ -266,7 +266,7 @@ begin
   when 'pr'
     options.pr_list.each do |pr_id|
       puts "Getting SARIF report(s) for PR ##{pr_id} in https://github.com/#{options.owner}/#{options.repo}:"
-      pr_info = client.get("/repos/#{options.owner}/#{options.repo}/pulls/#{pr_id}")
+      pr_info = client.pull_request("#{options.owner}/#{options.repo}", "#{pr_id}")  
       puts "  HEAD is #{pr_info.head.sha}"
       reports = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
       report_list = reports.select { |report| report.commit_sha == pr_info.head.sha }
@@ -289,6 +289,8 @@ begin
     puts 'Getting reports...'
     options.sha_list.each do |sha|
       puts "#{sha}: To be implemented"
+      commit_info = client.get("/repos/#{options.owner}/#{options.repo}/commits/#{sha}")
+      puts "matching #{sha} to #{commit_info.sha}"
     end
     puts '...done.'
   end
