@@ -40,7 +40,6 @@ class Optparse
                 ' and cannot begin or end with a hyphen.' \
                 " '#{owner}' fails this test!"
         end
-
         options.owner = owner
       end
 
@@ -72,9 +71,7 @@ class Optparse
       # get or grab one or more PR reports
 
       opts.on(
-        '-p x,y,z',
-        '--pr x,y,z',
-        Array,
+        '-p x,y,z', '--pr x,y,z', Array,
         'Get reports for the most recent commit on the source branch for each of the listed Pull Request numbers'
       ) do |pr_list|
         unless pr_list.all? { |i| i.match('^([0-9])*$') }
@@ -102,9 +99,7 @@ class Optparse
       # get or grab one or more reports listed by SHA
 
       opts.on(
-        '-s x,y,z',
-        '--sha x,y,z',
-        Array,
+        '-s x,y,z', '--sha x,y,z', Array,
         'Get reports for each of the listed Commit SHAs (To be implemented)',
         'We can figure out what commit you’re referring to if you provide the first few characters of the SHA-1 hash,',
         'as long as that partial hash is at least four characters long and unambiguous -',
