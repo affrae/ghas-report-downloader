@@ -16,11 +16,25 @@ To run this script, please set the following environment variables:
 
 ## To run
 
+- Download and unpack the latest version from the [releases page](https://github.com/affrae/ghas-report-downloader/releases).
+- Hop into the unpacked directory and issue teh following
+
 ``` zsh
 bundle install
-./ghasrd.rb
 ```
 
+- Place the ghasrd.rb script in your $PATH
+- Hop into the root directory of your repository and issue the `ghasrd.rb` command with appropriate options (detailed below).
+
+### Filenames and `.gitignore`
+
+The downloaded files are of the filename formats:
+
+- `analysis_[ID].sarif`
+- `pr_[PR#]_analysis_[ID].sarif`
+- `sha_[SHA]_analysis_[ID].sarif`
+
+you can add an appropriate pattern to your `.gitignore` file to stop them being pushed to the GitHub repository.
 ### Listing available reports
 
 ``` zsh
