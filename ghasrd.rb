@@ -290,7 +290,7 @@ begin
     options.sha_list.each do |sha|
       begin
         commit_info = client.get("/repos/#{options.owner}/#{options.repo}/commits/#{sha}")
-      rescue Octokit::ClientError => e
+      rescue Octokit::UnprocessableEntity
         warn "  No commit found for SHA: #{sha}"
         next
       end
