@@ -2,9 +2,9 @@
 
 `ghasrd.rb` lists code scanning SARIF reports for a given GitHub hosted repository and allows the user to identify and download these reports.
 
-Reports will be downloaded in a standard `.sarif` format and can be viewed in a IDE's SARIF viewer plugin
+Reports will be downloaded in a standard `.sarif` format and can be viewed in a IDE's SARIF viewer plugin.
 
-GitHub.com / GitHub Enterprise Cloud support only at this point in time
+GitHub.com / GitHub Enterprise Cloud support only at this point in time.
 
 Code scanning is available for all public repositories and for private repositories owned by organizations where GitHub Advanced Security is enabled. For more information, see "[About GitHub Advanced Security](https://docs.github.com/en/github/getting-started-with-github/about-github-advanced-security)."
 
