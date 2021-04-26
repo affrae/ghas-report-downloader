@@ -162,8 +162,8 @@ Files are stored in the format `sha_[SHA]_analysis_[ID].sarif`
 - [ ] Verbose `-v` and `-V` levels sorted out (right now it is a little noisy)
 - [ ] Implement a unit testing framework
 - [ ] Support for GitHub Enterprise Server
-- [ ] Support for GitHub Æ
 
 ### Long term (v3)
 
 - [ ] Interactivity to filter, choose and download multiple reports within one execution of the tool
+- [ ] Support for GitHub Æ
