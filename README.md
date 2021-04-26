@@ -17,7 +17,7 @@ To run this script, please set the following environment variables:
 ## To run
 
 - Download and unpack the latest version from the [releases page](https://github.com/affrae/ghas-report-downloader/releases).
-- Hop into the unpacked directory and issue teh following
+- Hop into the unpacked directory and issue the following:
 
 ``` zsh
 bundle install
