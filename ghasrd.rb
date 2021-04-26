@@ -56,8 +56,6 @@ class Optparse
       opts.separator ''
       opts.separator 'Specific options:'
 
-      # GHES Support
-
       # List the reports available
       opts.on('-l', '--list', 'List available reports') do
         options.command = 'list'
