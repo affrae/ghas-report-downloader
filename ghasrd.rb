@@ -288,9 +288,8 @@ begin
   when 'sha'
     puts 'Getting reports...'
     options.sha_list.each do |sha|
-      puts "#{sha}: To be implemented"
       commit_info = client.get("/repos/#{options.owner}/#{options.repo}/commits/#{sha}")
-      puts "matching #{sha} to #{commit_info.sha}"
+      puts "  Matching #{sha} to #{commit_info.sha}"
       reports = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
       report_list = reports.select { |report| report.commit_sha == commit_info.sha }
       unless report_list.empty?
