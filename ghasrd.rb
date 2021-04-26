@@ -24,7 +24,8 @@ class Optparse
     options = OpenStruct.new
     options.verbose = false
     options.extraVerbose = false
-    options.APIEndpoint = 'https://api.github.com'
+    options.api = "https://api.github.com"
+    options.hostname = "github.com"
 
     opt_parser = OptionParser.new do |opts|
       opts.banner = "Usage: #{$PROGRAM_NAME} [options]"
@@ -54,6 +55,12 @@ class Optparse
 
       opts.separator ''
       opts.separator 'Specific options:'
+
+      # GHES Support
+      opts.on('-a hostname', '--api hostname', 'Use GitHub Enterprise Server API api (https://[hostname]/api/v3)') do |hostname|
+        options.api = "https://#{hostname}/api/v3"
+        options.hostname = hostname
+      end
 
       # List the reports available
       opts.on('-l', '--list', 'List available reports') do
@@ -111,12 +118,11 @@ class Optparse
         options.command = 'sha'
       end
 
-      # Run verbosely
+      # Run extra verbosely
       opts.on('-v', 'Run verbosely') do
         options.verbose = true
       end
-
-      # Run verbosely
+            # Run extra verbosely
       opts.on('-V', 'Run extra verbosely') do
         options.verbose = true
         options.extraVerbose = true
@@ -185,13 +191,13 @@ def get_report(options, report, file_name)
   puts "  Getting SARIF report with ID #{report}..."
 
   response = get_uri(
-    URI.parse("#{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{report}"),
+    URI.parse("#{options.api}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{report}"),
     GITHUB_PAT
   )
 
   unless response.code == '200'
     puts '  Report does not exist for:'\
-         "#{options.APIEndpoint}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{report}"
+         "#{options.api}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{report}"
     return
   end
 
@@ -213,18 +219,29 @@ options = Optparse.parse(ARGV)
 
 if options.extraVerbose
   pp options
-  puts "Running as @#{client.user.login}"
 end
 
 begin
+
   GITHUB_PAT = ENV.fetch('GITHUB_PAT')
 
+  Octokit.configure do |c|
+    c.api_endpoint = options.api
+    if options.extraVerbose
+      puts "Connecting to #{c.api_endpoint}"
+    end
+  end
+
   client = Octokit::Client.new access_token: GITHUB_PAT
+
   client.auto_paginate = true
+  if options.extraVerbose
+    puts "Running as @#{client.user.login}"
+  end
 
   case options.command
   when 'list'
-    print "Getting a list of available reports for https://github.com/#{options.owner}/#{options.repo}..."
+    print "Getting a list of available reports for https://#{options.hostname}/#{options.owner}/#{options.repo}..."
     width = 40
     table = Terminal::Table.new headings: ['ID', 'Tool', 'Commit SHA(7)', 'Commit date', 'Commit author',
                                            'Commit message']
@@ -265,7 +282,7 @@ begin
 
   when 'pr'
     options.pr_list.each do |pr_id|
-      puts "Getting SARIF report(s) for PR ##{pr_id} in https://github.com/#{options.owner}/#{options.repo}:"
+      puts "Getting SARIF report(s) for PR ##{pr_id} in https://#{options.hostname}/#{options.owner}/#{options.repo}:"
       pr_info = client.pull_request("#{options.owner}/#{options.repo}", pr_id.to_s)
       puts "  HEAD is #{pr_info.head.sha}"
       reports = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
@@ -277,10 +294,10 @@ begin
         end
       end
       if report_list.empty?
-        puts "  No analysis reports found for SHA #{pr_info.head.sha} for PR ##{pr_id} in https://github.com/#{options.owner}/#{options.repo}"
+        puts "  No analysis reports found for SHA #{pr_info.head.sha} for PR ##{pr_id} in https://#{options.hostname}/#{options.owner}/#{options.repo}"
       end
     rescue Octokit::NotFound
-      puts "  Could not find the needed data - is https://github.com/#{options.owner}/#{options.repo}"
+      puts "  Could not find the needed data - is https://#{options.hostname}/#{options.owner}/#{options.repo}"
       puts '  the correct repository, or do you have the correct PR number?'
       next
     end
@@ -304,10 +321,10 @@ begin
         end
       end
       if report_list.empty?
-        puts "  No analysis reports found for SHA #{sha} in https://github.com/#{options.owner}/#{options.repo}"
+        puts "  No analysis reports found for SHA #{sha} in https://#{options.hostname}/#{options.owner}/#{options.repo}"
       end
     rescue Octokit::NotFound
-      puts "  Could not find the needed data - is https://github.com/#{options.owner}/#{options.repo}"
+      puts "  Could not find the needed data - is https://#{options.hostname}/#{options.owner}/#{options.repo}"
       puts '  the correct repository, or do you have the correct sha?'
       next
     end
@@ -321,16 +338,16 @@ rescue Octokit::Unauthorized
   warn 'Bad Credentials - is your GITHUB_PAT ok?'
   exit 1
 rescue Octokit::NotFound
-  warn "Could not find the needed data - is https://github.com/#{options.owner}/#{options.repo} the correct repository,"
+  warn "Could not find the needed data - is https://#{options.hostname}/#{options.owner}/#{options.repo} the correct repository,"
   warn 'or do you have the correct PR and/or Analysis Report IDs?'
   exit 1
 rescue Octokit::Forbidden
   warn '\bError!'
-  warn "Code Scanning has not been enabled for https://github.com/#{options.owner}/#{options.repo}"
+  warn "Code Scanning has not been enabled for https://#{options.hostname}/#{options.owner}/#{options.repo}"
   exit 1
 rescue Octokit::ServerError
   warn 'It appears the service is currently not available - please try again later.'
-  warn 'You can check https://www.githubstatus.com/ for operational details'
+  warn 'You can check https://www.githubstatus.com/ for operational details' unless options.hostname != "github.com"
   exit 1
 rescue Octokit::ClientError => e
   warn 'There is an Octokit Client Error we do not have a specific rescue for yet'
