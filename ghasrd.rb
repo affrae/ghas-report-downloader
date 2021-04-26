@@ -112,11 +112,12 @@ class Optparse
         options.command = 'sha'
       end
 
-      # Run extra verbosely
+      # Run verbosely
       opts.on('-v', 'Run verbosely') do
         options.verbose = true
       end
-            # Run extra verbosely
+
+      # Run extra verbosely
       opts.on('-V', 'Run extra verbosely') do
         options.verbose = true
         options.extraVerbose = true
