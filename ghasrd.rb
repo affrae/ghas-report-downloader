@@ -73,10 +73,9 @@ class Optparse
 
       # get or grab one or more PR reports
 
-      opts.on(
-        '-p x,y,z', '--pr x,y,z', Array,
-        'Get reports for the most recent commit on the source branch for each of the listed Pull Request numbers'
-      ) do |pr_list|
+      opts.on('-p x,y,z', '--pr x,y,z', Array,
+              'Get reports for the most recent commit on the source branch',
+              'for each of the listed Pull Request numbers') do |pr_list|
         unless pr_list.all? { |i| i.match('^([0-9])*$') }
           raise OptionParser::InvalidArgument,
                 "Pull Request IDs may only contain numbers. '#{pr_list.join(',')}' fails this test!"
@@ -104,8 +103,9 @@ class Optparse
       opts.on(
         '-s x,y,z', '--sha x,y,z', Array,
         'Get reports for each of the listed Commit SHAs (To be implemented)',
-        'We can figure out what commit you’re referring to if you provide the first few characters of the SHA-1 hash,',
-        'as long as that partial hash is at least four characters long and unambiguous -',
+        'We can figure out what commit you’re referring to if you provide',
+        'the first few characters of the SHA-1 hash, as long as that',
+        'partial hash is at least four characters long and unambiguous -',
         'that is, no other commit can have a hash that begins with the same prefix.'
       ) do |sha_list|
         unless sha_list.all? { |i| i.match('^([0-9a-z])*$') && i.length >= 4 && i.length <= 40 }
