@@ -209,17 +209,17 @@ end
 # if an environment variable does not exist, execute the code in the rescue block and exit status 1
 # in a shell script a non-zero exit value means it is an error
 
-GITHUB_PAT = ENV.fetch('GITHUB_PAT')
-
-client = Octokit::Client.new access_token: GITHUB_PAT
-client.auto_paginate = true
-
 options = Optparse.parse(ARGV)
 
 if options.extraVerbose
   pp options
   puts "Running as @#{client.user.login}"
 end
+
+GITHUB_PAT = ENV.fetch('GITHUB_PAT')
+
+client = Octokit::Client.new access_token: GITHUB_PAT
+client.auto_paginate = true
 
 begin
   case options.command
