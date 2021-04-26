@@ -217,9 +217,7 @@ end
 
 options = Optparse.parse(ARGV)
 
-if options.extraVerbose
-  pp options
-end
+if options.extraVerbose pp options
 
 begin
 
@@ -238,6 +236,8 @@ begin
   if options.extraVerbose
     puts "Running as @#{client.user.login}"
   end
+
+  if options.extraVerbose puts "Running as @#{client.user.login}"
 
   case options.command
   when 'list'
