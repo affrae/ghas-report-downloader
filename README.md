@@ -102,6 +102,20 @@ ghasrd.rb -o [OWNER] -r [REPO] -p 2045
 ghasrd.rb -o [OWNER] -r [REPO] -p 1257,2045
 ```
 
+### Download the current report for a SHA
+
+If you know the number of a SHA (or multiple SHAs), you can use the following command to download the currrent code scanning report for that SHA:
+
+``` shell
+# single
+ghasrd.rb -o [OWNER] -r [REPO] -s 9128b15
+
+# multiple
+ghasrd.rb -o [OWNER] -r [REPO] -s 9128b15,7b1eccd
+```
+
+We can figure out what commit you’re referring to if you provide as little as the the first four characters of the `SHA-1` hash, as long as that partial hash is at least four characters long and unambiguous - that is, no other commit can have a hash that begins with the same prefix.
+
 ## To Be Done
 
 ### Short term
