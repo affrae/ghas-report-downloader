@@ -216,12 +216,12 @@ if options.extraVerbose
   puts "Running as @#{client.user.login}"
 end
 
-GITHUB_PAT = ENV.fetch('GITHUB_PAT')
-
-client = Octokit::Client.new access_token: GITHUB_PAT
-client.auto_paginate = true
-
 begin
+  GITHUB_PAT = ENV.fetch('GITHUB_PAT')
+
+  client = Octokit::Client.new access_token: GITHUB_PAT
+  client.auto_paginate = true
+
   case options.command
   when 'list'
     print "Getting a list of available reports for https://github.com/#{options.owner}/#{options.repo}..."
@@ -313,30 +313,30 @@ rescue KeyError
   warn '- GITHUB_PAT: A Personal Access Token (PAT) for your account'
   exit 1
 rescue Octokit::Unauthorized
-  puts 'Bad Credentials - is your GITHUB_PAT ok?'
+  warn 'Bad Credentials - is your GITHUB_PAT ok?'
   exit 1
 rescue Octokit::NotFound
-  puts "Could not find the needed data - is https://github.com/#{options.owner}/#{options.repo} the correct repository,"
-  puts 'or do you have the correct PR and/or Analysis Report IDs?'
+  warn "Could not find the needed data - is https://github.com/#{options.owner}/#{options.repo} the correct repository,"
+  warn 'or do you have the correct PR and/or Analysis Report IDs?'
   exit 1
 rescue Octokit::Forbidden
-  puts '\bError!'
-  puts "Code Scanning has not been enabled for https://github.com/#{options.owner}/#{options.repo}"
+  warn '\bError!'
+  warn "Code Scanning has not been enabled for https://github.com/#{options.owner}/#{options.repo}"
   exit 1
 rescue Octokit::ServerError
-  puts 'It appears the service is currently not available - please try again later.'
-  puts 'You can check https://www.githubstatus.com/ for operational details'
+  warn 'It appears the service is currently not available - please try again later.'
+  warn 'You can check https://www.githubstatus.com/ for operational details'
   exit 1
 rescue Octokit::ClientError => e
-  puts 'There is an Octokit Client Error we do not have a specific message for yet'
-  puts e
+  warn 'There is an Octokit Client Error we do not have a specific message for yet'
+  warn e
   exit 1
 rescue Octokit::Error => e
-  puts 'There is a Octokit Error we do not have a specific message for yet'
-  puts e
+  warn 'There is a Octokit Error we do not have a specific message for yet'
+  warn e
   exit 1
 rescue StandardError => e
-  puts 'There is a Standard Error we do not have a specific message for yet'
-  puts e
+  warn 'There is a Standard Error we do not have a specific message for yet'
+  warn e
   exit 1
 end
