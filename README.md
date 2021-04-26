@@ -23,7 +23,7 @@ To run this script, please set the following environment variables:
 bundle install
 ```
 
-- Place the ghasrd.rb script in your $PATH
+- Place the `ghasrd.rb` script in your $PATH, make sure it is executable
 - Hop into the root directory of your repository and issue the `ghasrd.rb` command with appropriate options (detailed below).
 
 ### Filenames and `.gitignore`
