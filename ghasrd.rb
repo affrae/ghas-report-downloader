@@ -217,7 +217,9 @@ end
 
 options = Optparse.parse(ARGV)
 
-if options.extraVerbose pp options
+if options.extraVerbose
+  pp options
+end
 
 begin
 
@@ -225,13 +227,17 @@ begin
 
   Octokit.configure do |c|
     c.api_endpoint = options.api
-    if options.extraVerbose puts "Connecting to #{c.api_endpoint}"
+    if options.extraVerbose
+      puts "Connecting to #{c.api_endpoint}"
+    end
   end
 
   client = Octokit::Client.new access_token: GITHUB_PAT
   client.auto_paginate = true
 
-  if options.extraVerbose puts "Running as @#{client.user.login}"
+  if options.extraVerbose
+    puts "Running as @#{client.user.login}"
+  end
 
   case options.command
   when 'list'
