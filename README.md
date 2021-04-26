@@ -1,8 +1,8 @@
 # GitHub Code Scanning Report Downloader
 
-Goal is to list reports and allow the user to select the report they want to download. Also to teach myself some Ruby.
+`ghasrd.b` lists code scanning SARIF reports for a given repository and allows the user to identify and download these reports.
 
-Reports will be downloaded in `.sarif` format and can be viewed in a IDE's SARIF viewer plugin
+Reports will be downloaded in a standard `.sarif` format and can be viewed in a IDE's SARIF viewer plugin
 
 GitHub.com / GitHub Enterprise Cloud support only at this point in time
 
