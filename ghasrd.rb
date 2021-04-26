@@ -266,7 +266,7 @@ begin
   when 'pr'
     options.pr_list.each do |pr_id|
       puts "Getting SARIF report(s) for PR ##{pr_id} in https://github.com/#{options.owner}/#{options.repo}:"
-      pr_info = client.pull_request("#{options.owner}/#{options.repo}", "#{pr_id}")  
+      pr_info = client.pull_request("#{options.owner}/#{options.repo}", "#{pr_id}")
       puts "  HEAD is #{pr_info.head.sha}"
       reports = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
       report_list = reports.select { |report| report.commit_sha == pr_info.head.sha }
