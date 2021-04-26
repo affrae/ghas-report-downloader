@@ -288,7 +288,12 @@ begin
   when 'sha'
     puts 'Getting reports...'
     options.sha_list.each do |sha|
-      commit_info = client.get("/repos/#{options.owner}/#{options.repo}/commits/#{sha}")
+      begin
+        commit_info = client.get("/repos/#{options.owner}/#{options.repo}/commits/#{sha}")
+      rescue Octokit::ClientError => e
+        warn "  No commit found for SHA: #{sha}"
+        next
+      end
       puts "  Matching #{sha} to #{commit_info.sha}"
       reports = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
       report_list = reports.select { |report| report.commit_sha == commit_info.sha }
