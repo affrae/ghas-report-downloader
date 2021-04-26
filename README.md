@@ -45,7 +45,7 @@ ghasrd.rb -o [OWNER] -r [REPO] -l
 #### Sample output
 
 ``` zsh
-➜  ghas-report-downloader git:(main) ./ghasrd.rb -o affrae -r quickjavahelloworldmultimodule -l        
+➜  ghas-report-downloader git:(main) ghasrd.rb -o affrae -r quickjavahelloworldmultimodule -l        
 Getting a list of available reports for https://github.com/affrae/quickjavahelloworldmultimodule...done.
 +---------+--------+---------------+-------------------------+-----------------+-----------------------------------------+
 | ID      | Tool   | Commit SHA(7) | Commit date             | Commit author   | Commit message                          |
@@ -90,10 +90,10 @@ Getting a list of available reports for https://github.com/affrae/quickjavahello
 +---------+--------+---------------+-------------------------+-----------------+-----------------------------------------+
 
 To get an report issue the command:
-  ./ghasrd.rb -o affrae -r quickjavahelloworldmultimodule -g [ID]
+  ghasrd.rb -o affrae -r quickjavahelloworldmultimodule -g [ID]
 where [ID] is the ID of the analysis report you are interested in from the table above.
 For example:
-  ./ghasrd.rb -o affrae -r quickjavahelloworldmultimodule -g  5876116 
+  ghasrd.rb -o affrae -r quickjavahelloworldmultimodule -g  5876116 
 to get the last report on that table                                                                                                                 /6.2s
 ➜  ghas-report-downloader git:(main) 
 ```
