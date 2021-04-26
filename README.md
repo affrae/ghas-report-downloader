@@ -146,7 +146,7 @@ Files are stored in the format `sha_[SHA]_analysis_[ID].sarif`
 
 ## To Be Done
 
-### Short term
+### Short term (v1)
 
 - [x] Error Checking and Handling
 - [x] User Input Data checking and sanitization
@@ -157,13 +157,13 @@ Files are stored in the format `sha_[SHA]_analysis_[ID].sarif`
 - [ ] Enable an option to provide a directory to download the reports to
 - [ ] Better docs
 
-### Mid term
+### Mid term (v2)
 
 - [ ] Verbose `-v` and `-V` levels sorted out (right now it is a little noisy)
 - [ ] Implement a unit testing framework
 - [ ] Support for GitHub Enterprise Server
 - [ ] Support for GitHub Æ
 
-### Long term
+### Long term (v3)
 
 - [ ] Interactivity to filter, choose and download multiple reports within one execution of the tool
