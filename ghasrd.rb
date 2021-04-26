@@ -291,6 +291,21 @@ begin
       puts "#{sha}: To be implemented"
       commit_info = client.get("/repos/#{options.owner}/#{options.repo}/commits/#{sha}")
       puts "matching #{sha} to #{commit_info.sha}"
+      reports = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
+      report_list = reports.select { |report| report.commit_sha == commit_info.sha }
+      unless report_list.empty?
+        report_list.each do |report|
+          puts "  Found Report #{report.id}"
+          get_report(options, report.id, "sha_#{sha}_analysis_#{report.id}.sarif")
+        end
+      end
+      if report_list.empty?
+        puts "  No analysis reports found for SHA #{sha} in https://github.com/#{options.owner}/#{options.repo}"
+      end
+    rescue Octokit::NotFound
+      puts "  Could not find the needed data - is https://github.com/#{options.owner}/#{options.repo}"
+      puts '  the correct repository, or do you have the correct sha?'
+      next
     end
     puts '...done.'
   end
