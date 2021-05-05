@@ -99,6 +99,25 @@ to get the last report on that table                                            
 ```
 
 ### Downloading reports
+
+#### Output directory
+
+By default the reports will be downloaded to the directory you are calling the script **_from_** - **_not_** the directory the script is stored in.
+So for example if you issued the command:
+
+``` zsh
+cd myreports; ghasrd.rb -o myowner -r myrepo -g 5876671
+```
+
+The reports will download to the `myreports` directory
+
+The `-d [DIRECTORY]` or `--dir [DIRECTORY]` option allows you to set where the reports will be downloaded to:
+
+``` zsh
+mkdir ~/myreports; ghasrd.rb -o myowner -r myrepo -g 5876671 -d ~/myreports
+```
+
+will download the reports to the `myreports` directory in your home directory - no matter where you call the script from.
 #### By analysis ID
 
 If you know the ID (or multiple IDs) for an analyis (you can get a list of IDs using the `-l` option), you can use the following command to download the report for each ID:
