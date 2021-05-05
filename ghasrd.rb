@@ -210,7 +210,10 @@ def get_report(options, report, file_name)
   raise 'Path given is not a directory' unless path.directory?
 
   path += file_name
-  path.open('w') { |io| io.write(response.body); puts "  Report Downloaded to #{file_name}" }
+  path.open('w') {|f|
+    f.write(response.body)
+    puts "  Report Downloaded to #{file_name}"
+  }
 end
 
 # Main
