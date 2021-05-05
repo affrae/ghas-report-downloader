@@ -37,7 +37,7 @@ class Optparse
 
       opts.on('-d', '--dir DIRECTORY', 'The directory to write the reports to') do |directory|
         options.directory = directory
-        puts "Directory is #{ directory }" 
+        puts "Directory is #{directory}"
       end
 
       opts.on('-o', '--owner OWNER', 'The owner of the repository') do |owner|
@@ -205,13 +205,12 @@ def get_report(options, report, file_name)
   end
 
   path = Pathname.new(options.directory)
-  raise "Directory does not exist" unless path.exist?
+  raise 'Directory does not exist' unless path.exist?
 
-  raise "Path given is not a directory" unless path.directory?
+  raise 'Path given is not a directory' unless path.directory?
 
   path += file_name
-  path.open("w") { |io| io.write(response.body); puts "  Report Downloaded to #{file_name}" }
-
+  path.open('w') { |io| io.write(response.body); puts "  Report Downloaded to #{file_name}" }
 end
 
 # Main
