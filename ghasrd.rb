@@ -3,6 +3,7 @@
 # frozen_string_literal: true
 
 require 'terminal-table'
+require 'pathname'
 require 'octokit'
 require 'optparse'
 require 'ostruct'
@@ -26,12 +27,18 @@ class Optparse
     options.extraVerbose = false
     options.api = 'https://api.github.com'
     options.hostname = 'github.com'
+    options.directory = Dir.pwd
 
     opt_parser = OptionParser.new do |opts|
       opts.banner = "Usage: #{$PROGRAM_NAME} [options]"
 
       opts.separator ''
       opts.separator 'Mandatory options:'
+
+      opts.on('-d', '--dir DIRECTORY', 'The directory to write the reports to') do |directory|
+        options.directory = directory
+        puts "Directory is #{ directory }" 
+      end
 
       opts.on('-o', '--owner OWNER', 'The owner of the repository') do |owner|
         unless owner.match('^([a-z0-9])(?!.*--)([a-z0-9-])*([a-z0-9])$')
@@ -184,6 +191,7 @@ end
 
 def get_report(options, report, file_name)
   puts "  Getting SARIF report with ID #{report}..."
+  puts "  Writing output to: #{options.directory}"
 
   response = get_uri(
     URI.parse("#{options.api}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{report}"),
@@ -196,7 +204,14 @@ def get_report(options, report, file_name)
     return
   end
 
-  File.open(file_name, 'w') { |f| f.write(response.body); puts "  Report Downloaded to #{file_name}" }
+  path = Pathname.new(options.directory)
+  raise "Directory does not exist" unless path.exist?
+
+  raise "Path given is not a directory" unless path.directory?
+
+  path += file_name
+  path.open("w") { |io| io.write(response.body); puts "  Report Downloaded to #{file_name}" }
+
 end
 
 # Main
