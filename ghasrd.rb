@@ -27,17 +27,20 @@ class Optparse
     options.extraVerbose = false
     options.api = 'https://api.github.com'
     options.hostname = 'github.com'
-    options.directory = Dir.pwd
+    options.directory = Pathname.new(Dir.pwd)
 
     opt_parser = OptionParser.new do |opts|
       opts.banner = "Usage: #{$PROGRAM_NAME} [options]"
-
       opts.separator ''
       opts.separator 'Mandatory options:'
-
       opts.on('-d', '--dir DIRECTORY', 'The directory to write the reports to') do |directory|
-        options.directory = directory
-        puts "Directory is #{directory}"
+        path = Pathname.new(directory)
+        raise 'Directory does not exist' unless path.exist?
+
+        raise 'Path given is not a directory' unless path.directory?
+
+        puts "Output directory is #{path.expand_path}"
+        options.directory = path.expand_path
       end
 
       opts.on('-o', '--owner OWNER', 'The owner of the repository') do |owner|
@@ -204,12 +207,7 @@ def get_report(options, report, file_name)
     return
   end
 
-  path = Pathname.new(options.directory)
-  raise 'Directory does not exist' unless path.exist?
-
-  raise 'Path given is not a directory' unless path.directory?
-
-  path += file_name
+  path = options.directory + file_name
   path.open('w') do |f|
     f.write(response.body)
     puts "  Report Downloaded to #{file_name}"
