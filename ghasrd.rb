@@ -3,6 +3,7 @@
 # frozen_string_literal: true
 
 require 'terminal-table'
+require 'pathname'
 require 'octokit'
 require 'optparse'
 require 'ostruct'
@@ -26,12 +27,21 @@ class Optparse
     options.extraVerbose = false
     options.api = 'https://api.github.com'
     options.hostname = 'github.com'
+    options.directory = Pathname.new(Dir.pwd)
 
     opt_parser = OptionParser.new do |opts|
       opts.banner = "Usage: #{$PROGRAM_NAME} [options]"
-
       opts.separator ''
       opts.separator 'Mandatory options:'
+      opts.on('-d', '--dir DIRECTORY', 'The directory to write the reports to') do |directory|
+        path = Pathname.new(directory)
+        raise 'Directory does not exist' unless path.exist?
+
+        raise 'Path given is not a directory' unless path.directory?
+
+        puts "Output directory is #{path.expand_path}"
+        options.directory = path.expand_path
+      end
 
       opts.on('-o', '--owner OWNER', 'The owner of the repository') do |owner|
         unless owner.match('^([a-z0-9])(?!.*--)([a-z0-9-])*([a-z0-9])$')
@@ -196,7 +206,11 @@ def get_report(options, report, file_name)
     return
   end
 
-  File.open(file_name, 'w') { |f| f.write(response.body); puts "  Report Downloaded to #{file_name}" }
+  path = options.directory + file_name
+  path.open('w') do |f|
+    f.write(response.body)
+    puts "  Report Downloaded to #{file_name}"
+  end
 end
 
 # Main
@@ -263,6 +277,8 @@ begin
 
   when 'get'
     puts 'Getting reports...'
+    puts "  Writing output to: #{options.directory}"
+
     options.report_list.each do |report|
       get_report(options, report, "analysis_#{report}.sarif")
     end
@@ -271,6 +287,7 @@ begin
   when 'pr'
     options.pr_list.each do |pr_id|
       puts "Getting SARIF report(s) for PR ##{pr_id} in https://#{options.hostname}/#{options.owner}/#{options.repo}:"
+      puts "  Writing output to: #{options.directory}"
       pr_info = client.pull_request("#{options.owner}/#{options.repo}", pr_id.to_s)
       puts "  HEAD is #{pr_info.head.sha}"
       reports = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
@@ -292,6 +309,7 @@ begin
 
   when 'sha'
     puts 'Getting reports...'
+    puts "  Writing output to: #{options.directory}"
     options.sha_list.each do |sha|
       begin
         commit_info = client.get("/repos/#{options.owner}/#{options.repo}/commits/#{sha}")
