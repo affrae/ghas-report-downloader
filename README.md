@@ -109,15 +109,15 @@ So for example if you issued the command:
 cd myreports; ghasrd.rb -o myowner -r myrepo -g 5876671
 ```
 
-The reports will download to the `myreports` directory
+The report(s) will be downloaded to the `myreports` directory
 
-The `-d [DIRECTORY]` or `--dir [DIRECTORY]` option allows you to set where the reports will be downloaded to:
+The `-d [DIRECTORY]` or `--dir [DIRECTORY]` option allows you to set where the reports will be downloaded to. The follwoing command:
 
 ``` zsh
 mkdir ~/myreports; ghasrd.rb -o myowner -r myrepo -g 5876671 -d ~/myreports
 ```
 
-will download the reports to the `myreports` directory in your home directory - no matter where you call the script from.
+will download the report(s) to the `myreports` directory in your home directory - no matter where you call the script from.
 #### By analysis ID
 
 If you know the ID (or multiple IDs) for an analyis (you can get a list of IDs using the `-l` option), you can use the following command to download the report for each ID:
