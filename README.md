@@ -111,7 +111,7 @@ cd myreports; ghasrd.rb -o myowner -r myrepo -g 5876671
 
 the report(s) will be downloaded to the `myreports` directory
 
-The `-d [DIRECTORY]` or `--dir [DIRECTORY]` option allows you to set where the reports will be downloaded to. The follwoing command:
+The `-d [DIRECTORY]` or `--dir [DIRECTORY]` option allows you to set where the reports will be downloaded to. The following command:
 
 ``` zsh
 mkdir ~/myreports; ghasrd.rb -o myowner -r myrepo -g 5876671 -d ~/myreports
