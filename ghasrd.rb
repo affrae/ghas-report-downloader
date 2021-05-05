@@ -194,7 +194,6 @@ end
 
 def get_report(options, report, file_name)
   puts "  Getting SARIF report with ID #{report}..."
-  puts "  Writing output to: #{options.directory}"
 
   response = get_uri(
     URI.parse("#{options.api}/repos/#{options.owner}/#{options.repo}/code-scanning/analyses/#{report}"),
@@ -278,6 +277,8 @@ begin
 
   when 'get'
     puts 'Getting reports...'
+    puts "  Writing output to: #{options.directory}"
+
     options.report_list.each do |report|
       get_report(options, report, "analysis_#{report}.sarif")
     end
@@ -286,6 +287,7 @@ begin
   when 'pr'
     options.pr_list.each do |pr_id|
       puts "Getting SARIF report(s) for PR ##{pr_id} in https://#{options.hostname}/#{options.owner}/#{options.repo}:"
+      puts "  Writing output to: #{options.directory}"
       pr_info = client.pull_request("#{options.owner}/#{options.repo}", pr_id.to_s)
       puts "  HEAD is #{pr_info.head.sha}"
       reports = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
@@ -307,6 +309,7 @@ begin
 
   when 'sha'
     puts 'Getting reports...'
+    puts "  Writing output to: #{options.directory}"
     options.sha_list.each do |sha|
       begin
         commit_info = client.get("/repos/#{options.owner}/#{options.repo}/commits/#{sha}")
