@@ -34,7 +34,36 @@ The downloaded files are of the filename formats:
 - `pr_[PR#]_analysis_[ID].sarif`
 - `sha_[SHA]_analysis_[ID].sarif`
 
-you can add an appropriate pattern to your `.gitignore` file to stop them being pushed to the GitHub repository.
+You can add an appropriate pattern to your `.gitignore` file to stop them being pushed to the GitHub repository.
+
+### General help
+
+```zsh
+➜  ghas-report-downloader git:(main) ghasrd.rb --help
+
+Usage: ./ghasrd.rb [options]
+
+Mandatory options:
+    -d, --dir DIRECTORY              The directory to write the reports to
+    -o, --owner OWNER                The owner of the repository
+    -r, --repo REPO                  The repository to query
+
+Specific options:
+    -l, --list                       List available reports
+    -p, --pr x,y,z                   Get reports for the most recent commit on the source branch
+                                     for each of the listed Pull Request numbers
+    -g, --get, --grab x,y,z          Get one or more reports by the Analysis Report ID.
+    -s, --sha x,y,z                  Get reports for each of the listed Commit SHAs
+                                     We can figure out what commit you’re referring to
+                                     if you provide the first few characters of the SHA-1 hash,
+                                     as long as that partial hash is at least four characters long and
+                                     no other commit can have a hash that begins with the same prefix.
+    -v                               Run verbosely
+    -V                               Run extra verbosely
+
+Common options:
+    -h, --help                       Show this message 
+```
 
 ### Listing available reports
 
@@ -99,6 +128,25 @@ to get the last report on that table                                            
 ```
 
 ### Downloading reports
+
+#### Output directory
+
+By default the reports will be downloaded to the directory you are calling the script **_from_** - **_not_** the directory the script is stored in.
+So for example if you issued the command:
+
+``` zsh
+cd myreports; ghasrd.rb -o myowner -r myrepo -g 5876671
+```
+
+the report(s) will be downloaded to the `myreports` directory
+
+The `-d [DIRECTORY]` or `--dir [DIRECTORY]` option allows you to set where the reports will be downloaded to. The following command:
+
+``` zsh
+mkdir ~/myreports; ghasrd.rb -o myowner -r myrepo -g 5876671 -d ~/myreports
+```
+
+will download the report(s) to the `myreports` directory in your home directory - no matter where you call the script from.
 #### By analysis ID
 
 If you know the ID (or multiple IDs) for an analyis (you can get a list of IDs using the `-l` option), you can use the following command to download the report for each ID:

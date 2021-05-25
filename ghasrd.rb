@@ -3,6 +3,7 @@
 # frozen_string_literal: true
 
 require 'terminal-table'
+require 'pathname'
 require 'octokit'
 require 'optparse'
 require 'ostruct'
@@ -26,12 +27,21 @@ class Optparse
     options.extraVerbose = false
     options.api = 'https://api.github.com'
     options.hostname = 'github.com'
+    options.directory = Pathname.new(Dir.pwd)
 
     opt_parser = OptionParser.new do |opts|
       opts.banner = "Usage: #{$PROGRAM_NAME} [options]"
-
       opts.separator ''
       opts.separator 'Mandatory options:'
+      opts.on('-d', '--dir DIRECTORY', 'The directory to write the reports to') do |directory|
+        path = Pathname.new(directory)
+        raise 'Directory does not exist' unless path.exist?
+
+        raise 'Path given is not a directory' unless path.directory?
+
+        puts "Output directory is #{path.expand_path}"
+        options.directory = path.expand_path
+      end
 
       opts.on('-o', '--owner OWNER', 'The owner of the repository') do |owner|
         unless owner.match('^([a-z0-9])(?!.*--)([a-z0-9-])*([a-z0-9])$')
@@ -73,9 +83,12 @@ class Optparse
 
       # get or grab one or more PR reports
 
-      opts.on('-p x,y,z', '--pr x,y,z', Array,
-              'Get reports for the most recent commit on the source branch',
-              'for each of the listed Pull Request numbers') do |pr_list|
+      opts.on(
+        '-p x,y,z',
+        '--pr x,y,z',
+        Array,
+        'Get reports for the most recent commit on the source branch', 'for each of the listed Pull Request numbers'
+      ) do |pr_list|
         unless pr_list.all? { |i| i.match('^([0-9])*$') }
           raise OptionParser::InvalidArgument,
                 "Pull Request IDs may only contain numbers. '#{pr_list.join(',')}' fails this test!"
@@ -101,12 +114,14 @@ class Optparse
       # get or grab one or more reports listed by SHA
 
       opts.on(
-        '-s x,y,z', '--sha x,y,z', Array,
-        'Get reports for each of the listed Commit SHAs.',
-        'We can figure out what commit you’re referring to if you provide',
-        'the first few characters of the SHA-1 hash, as long as that',
-        'partial hash is at least four characters long and unambiguous -',
-        'that is, no other commit can have a hash that begins with the same prefix.'
+        '-s x,y,z',
+        '--sha x,y,z',
+        Array,
+        'Get reports for each of the listed Commit SHAs',
+        'We can figure out what commit you’re referring to',
+        'if you provide the first few characters of the SHA-1 hash,',
+        'as long as that partial hash is at least four characters long and',
+        'no other commit can have a hash that begins with the same prefix.'
       ) do |sha_list|
         unless sha_list.all? { |i| i.match('^([0-9a-z])*$') && i.length >= 4 && i.length <= 40 }
           raise OptionParser::InvalidArgument,
@@ -202,7 +217,11 @@ def get_report(options, report, file_name)
     return
   end
 
-  File.open(file_name, 'w') { |f| f.write(response.body); puts "  Report Downloaded to #{file_name}" }
+  path = options.directory + file_name
+  path.open('w') do |f|
+    f.write(response.body)
+    puts "  Report Downloaded to #{file_name}"
+  end
 end
 
 # Main
@@ -269,6 +288,8 @@ begin
 
   when 'get'
     puts 'Getting reports...'
+    puts "  Writing output to: #{options.directory}"
+
     options.report_list.each do |report|
       get_report(options, report, "analysis_#{report}.sarif")
     end
@@ -277,6 +298,7 @@ begin
   when 'pr'
     options.pr_list.each do |pr_id|
       puts "Getting SARIF report(s) for PR ##{pr_id} in https://#{options.hostname}/#{options.owner}/#{options.repo}:"
+      puts "  Writing output to: #{options.directory}"
       pr_info = client.pull_request("#{options.owner}/#{options.repo}", pr_id.to_s)
       puts "  HEAD is #{pr_info.head.sha}"
       reports = client.get("/repos/#{options.owner}/#{options.repo}/code-scanning/analyses")
@@ -298,6 +320,7 @@ begin
 
   when 'sha'
     puts 'Getting reports...'
+    puts "  Writing output to: #{options.directory}"
     options.sha_list.each do |sha|
       begin
         commit_info = client.get("/repos/#{options.owner}/#{options.repo}/commits/#{sha}")
