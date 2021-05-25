@@ -42,12 +42,11 @@ You can add an appropriate pattern to your `.gitignore` file to stop them being 
 ➜  ghas-report-downloader git:(main) ghasrd.rb --help
 Usage: ./ghasrd.rb [options]
 
-Mandatory options:
-    -d, --dir DIRECTORY              The directory to write the reports to
+Owner and repo:
     -o, --owner OWNER                The owner of the repository
     -r, --repo REPO                  The repository to query
 
-Specific options:
+Actions:
     -l, --list                       List available reports
     -p, --pr x,y,z                   Get reports for the most recent commit on the source branch
                                      for each of the listed Pull Request numbers
@@ -57,11 +56,12 @@ Specific options:
                                      if you provide the first few characters of the SHA-1 hash,
                                      as long as that partial hash is at least four characters long and
                                      no other commit can have a hash that begins with the same prefix.
+
+Other options:
+    -d, --dir DIRECTORY              The directory to write the reports to
     -v                               Run verbosely
     -V                               Run extra verbosely
-
-Common options:
-    -h, --help                       Show this message 
+    -h, --help                       Show this message  
 ```
 
 ### Listing available reports
@@ -201,7 +201,7 @@ Files are stored in the format `sha_[SHA]_analysis_[ID].sarif`
 - [x] Download the report(s) using the `-g` option (listing report analysis IDs)
 - [x] Download the report(s) for the most recent commit to a Pull Request source branch using the `-p` option (listing Pull Request numbers )
 - [x] Download the report(s) for a given Commit SHA or list of Commit SHAs
-- [ ] Enable an option to provide a directory to download the reports to
+- [x] Enable an option to provide a directory to download the reports to
 - [ ] Better docs
 
 ### Mid term (v2)

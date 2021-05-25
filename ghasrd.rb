@@ -32,16 +32,7 @@ class Optparse
     opt_parser = OptionParser.new do |opts|
       opts.banner = "Usage: #{$PROGRAM_NAME} [options]"
       opts.separator ''
-      opts.separator 'Mandatory options:'
-      opts.on('-d', '--dir DIRECTORY', 'The directory to write the reports to') do |directory|
-        path = Pathname.new(directory)
-        raise 'Directory does not exist' unless path.exist?
-
-        raise 'Path given is not a directory' unless path.directory?
-
-        puts "Output directory is #{path.expand_path}"
-        options.directory = path.expand_path
-      end
+      opts.separator 'Owner and repo:'
 
       opts.on('-o', '--owner OWNER', 'The owner of the repository') do |owner|
         unless owner.match('^([a-z0-9])(?!.*--)([a-z0-9-])*([a-z0-9])$')
@@ -63,19 +54,7 @@ class Optparse
       end
 
       opts.separator ''
-      opts.separator 'Specific options:'
-
-      # GHES Support
-      opts.on(
-        '-a hostname', '--apihost hostname', 'Use GitHub Enterprise Server API api',
-        'at https://[hostname]/api/v3 (just provide the hostname)'
-      ) do |hostname|
-        unless (hostname == 'github.com') || (hostname == 'api.github.com')
-          options.api = "https://#{hostname}/api/v3"
-          options.hostname = hostname
-        end
-      end
-
+      opts.separator 'Actions:'
       # List the reports available
       opts.on('-l', '--list', 'List available reports') do
         options.command = 'list'
@@ -133,6 +112,20 @@ class Optparse
         options.command = 'sha'
       end
 
+      opts.separator ''
+      opts.separator 'Other options:'
+
+      # Set the output directory
+      opts.on('-d', '--dir DIRECTORY', 'The directory to write the reports to') do |directory|
+        path = Pathname.new(directory)
+        raise 'Directory does not exist' unless path.exist?
+
+        raise 'Path given is not a directory' unless path.directory?
+
+        puts "Output directory is #{path.expand_path}"
+        options.directory = path.expand_path
+      end
+
       # Run verbosely
       opts.on('-v', 'Run verbosely') do
         options.verbose = true
@@ -143,9 +136,6 @@ class Optparse
         options.verbose = true
         options.extraVerbose = true
       end
-
-      opts.separator ''
-      opts.separator 'Common options:'
 
       # No argument, shows at tail.  This will print an options summary.
       opts.on_tail('-h', '--help', 'Show this message') do
