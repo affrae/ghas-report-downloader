@@ -77,7 +77,7 @@ class Optparse
         '-p x,y,z',
         '--pr x,y,z',
         Array,
-        'Get reports for the most recent commit on the source branch for each of the listed Pull Request numbers'
+        'Get reports for the most recent commit on the source branch', 'for each of the listed Pull Request numbers'
       ) do |pr_list|
         unless pr_list.all? { |i| i.match('^([0-9])*$') }
           raise OptionParser::InvalidArgument,
@@ -108,9 +108,10 @@ class Optparse
         '--sha x,y,z',
         Array,
         'Get reports for each of the listed Commit SHAs',
-        'We can figure out what commit you’re referring to if you provide the first few characters of the SHA-1 hash,',
-        'as long as that partial hash is at least four characters long and unambiguous -',
-        'that is, no other commit can have a hash that begins with the same prefix.'
+        'We can figure out what commit you’re referring to',
+        'if you provide the first few characters of the SHA-1 hash,',
+        'as long as that partial hash is at least four characters long and',
+        'no other commit can have a hash that begins with the same prefix.'
       ) do |sha_list|
         unless sha_list.all? { |i| i.match('^([0-9a-z])*$') && i.length >= 4 && i.length <= 40 }
           raise OptionParser::InvalidArgument,
