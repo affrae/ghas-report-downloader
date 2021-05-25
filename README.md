@@ -34,7 +34,34 @@ The downloaded files are of the filename formats:
 - `pr_[PR#]_analysis_[ID].sarif`
 - `sha_[SHA]_analysis_[ID].sarif`
 
-you can add an appropriate pattern to your `.gitignore` file to stop them being pushed to the GitHub repository.
+You can add an appropriate pattern to your `.gitignore` file to stop them being pushed to the GitHub repository.
+
+### General help
+
+```zsh
+➜  ghas-report-downloader git:(main) ghasrd.rb --help
+
+Usage: ./ghasrd.rb [options]
+
+Mandatory options:
+    -d, --dir DIRECTORY              The directory to write the reports to
+    -o, --owner OWNER                The owner of the repository
+    -r, --repo REPO                  The repository to query
+
+Specific options:
+    -l, --list                       List available reports
+    -p, --pr x,y,z                   Get reports for the most recent commit on the source branch for each of the listed Pull Request numbers
+    -g, --get, --grab x,y,z          Get one or more reports by the Analysis Report ID.
+    -s, --sha x,y,z                  Get reports for each of the listed Commit SHAs
+                                     We can figure out what commit you’re referring to if you provide the first few characters of the SHA-1 hash,
+                                     as long as that partial hash is at least four characters long and unambiguous -
+                                     that is, no other commit can have a hash that begins with the same prefix.
+    -v                               Run verbosely
+    -V                               Run extra verbosely
+
+Common options:
+    -h, --help                       Show this message 
+```
 
 ### Listing available reports
 
