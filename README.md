@@ -40,7 +40,6 @@ You can add an appropriate pattern to your `.gitignore` file to stop them being 
 
 ```zsh
 ➜  ghas-report-downloader git:(main) ghasrd.rb --help
-
 Usage: ./ghasrd.rb [options]
 
 Mandatory options:
