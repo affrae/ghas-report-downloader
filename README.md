@@ -202,7 +202,7 @@ Files are stored in the format `sha_[SHA]_analysis_[ID].sarif`
 - [x] Download the report(s) for the most recent commit to a Pull Request source branch using the `-p` option (listing Pull Request numbers )
 - [x] Download the report(s) for a given Commit SHA or list of Commit SHAs
 - [x] Enable an option to provide a directory to download the reports to
-- [ ] Better docs
+- [x] Better docs
 
 ### Mid term (v2)
 
