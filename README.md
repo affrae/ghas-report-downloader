@@ -187,7 +187,7 @@ ghasrd.rb -o [OWNER] -r [REPO] -s 9128b15
 ghasrd.rb -o [OWNER] -r [REPO] -s 9128b15,7b1eccd
 ```
 
-We can figure out what commit you’re referring to *if you provide as few as the the first four characters of the `SHA-1` hash*, so long as that partial hash is  unambiguous - that is, no other commit can have a hash that begins with the same prefix. This means you do not need to enter all 40 characters of every `SHA-1` hash you are after :smiling_imp:&nbsp;.
+We can figure out what commit you’re referring to *if you provide as few as the the first four characters of the* `SHA-1` *hash*, so long as that partial hash is  unambiguous - that is, no other commit can have a hash that begins with the same prefix. This means you do not need to enter all 40 characters of every `SHA-1` hash you are after :smiling_imp:&nbsp;.
 
 Files are stored in the format `sha_[SHA]_analysis_[ID].sarif`
 
