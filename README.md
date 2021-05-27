@@ -208,6 +208,7 @@ Files are stored in the format `sha_[SHA]_analysis_[ID].sarif`
 
 - [ ] Verbose `-v` and `-V` levels sorted out (right now it is a little noisy)
 - [ ] Implement a unit testing framework
+- [ ] Suppport for generating a pdf version of the report using a `-f, --format` option
 - [ ] Support for GitHub Enterprise Server
 
 ### Long term (v3)
