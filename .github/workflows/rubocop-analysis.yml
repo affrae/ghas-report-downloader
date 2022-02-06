@@ -11,6 +11,8 @@ on:
     - cron: '45 4 * * 2'
   workflow_dispatch:
   
+permissions: read-all
+  
 jobs:
   rubocop:
     runs-on: ubuntu-latest
