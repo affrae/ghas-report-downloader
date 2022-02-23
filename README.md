@@ -40,7 +40,7 @@ You can add an appropriate pattern to your `.gitignore` file to stop them being 
 
 ```zsh
 ➜  ghas-report-downloader git:(main) ghasrd.rb --help
-Usage: ./ghasrd.rb [options]
+Usage: ghasrd.rb [options]
 
 Owner and repo:
     -o, --owner OWNER                The owner of the repository
@@ -163,7 +163,7 @@ Files are stored in the format `analysis_[ID].sarif`
 
 #### By Pull Request Number (PR)
 
-If you know the number of a PR (or multiple PRs), you can use the following command to download the code scanning reports for the HEAD sha of each PR:
+If you know the number of a PR (or multiple PRs), you can use the following command to download the code scanning reports for the HEAD SHA of each PR:
 
 ``` shell
 # single
@@ -187,7 +187,7 @@ ghasrd.rb -o [OWNER] -r [REPO] -s 9128b15
 ghasrd.rb -o [OWNER] -r [REPO] -s 9128b15,7b1eccd
 ```
 
-We can figure out what commit you’re referring to _if you provide as few as the the first four characters of the `SHA-1` hash_, as long as that partial hash is  unambiguous - that is, no other commit can have a hash that begins with the same prefix. This means you do not need to enter all 40 characters of every SHA-1 hash you are after :smiling_imp:&nbsp;.
+We can figure out what commit you’re referring to *if you provide as few as the the first four characters of the* `SHA-1` *hash*, so long as that partial hash is  unambiguous - that is, no other commit can have a hash that begins with the same prefix. This means you do not need to enter all 40 characters of every `SHA-1` hash you are after :smiling_imp:&nbsp;.
 
 Files are stored in the format `sha_[SHA]_analysis_[ID].sarif`
 
@@ -202,12 +202,13 @@ Files are stored in the format `sha_[SHA]_analysis_[ID].sarif`
 - [x] Download the report(s) for the most recent commit to a Pull Request source branch using the `-p` option (listing Pull Request numbers )
 - [x] Download the report(s) for a given Commit SHA or list of Commit SHAs
 - [x] Enable an option to provide a directory to download the reports to
-- [ ] Better docs
+- [x] Better docs
 
 ### Mid term (v2)
 
 - [ ] Verbose `-v` and `-V` levels sorted out (right now it is a little noisy)
 - [ ] Implement a unit testing framework
+- [ ] Suppport for generating a pdf version of the report using a `-f, --format` option
 - [ ] Support for GitHub Enterprise Server
 
 ### Long term (v3)

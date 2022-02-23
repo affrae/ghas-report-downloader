@@ -9,8 +9,13 @@ on:
     branches: [ main ]
   schedule:
     - cron: '45 4 * * 2'
+
   workflow_dispatch:
   
+permissions:
+  contents: read
+  security-events: write
+
 jobs:
   rubocop:
     runs-on: ubuntu-latest
@@ -19,7 +24,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # v2.4.0
 
     # If running on a self-hosted runner, check it meets the requirements
     # listed at https://github.com/ruby/setup-ruby#using-self-hosted-runners
