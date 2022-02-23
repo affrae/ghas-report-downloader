@@ -12,16 +12,17 @@ on:
 
   workflow_dispatch:
   
-permissions:
-  contents: read
-  security-events: write
+permissions: read-all
 
 jobs:
   rubocop:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-
+    permissions:
+      contents: read
+      security-events: write
+      
     steps:
     - name: Checkout repository
       uses: actions/checkout@ec3a7ce113134d7a93b817d10a8272cb61118579 # v2.4.0
