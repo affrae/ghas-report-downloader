@@ -12,8 +12,10 @@ on:
 
   workflow_dispatch:
   
-permissions: read-all
-  
+permissions:
+  contents: read
+  security-events: write
+
 jobs:
   rubocop:
     runs-on: ubuntu-latest
