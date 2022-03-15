@@ -41,7 +41,6 @@ class Optparse
                 ' and cannot begin or end with a hyphen.' \
                 " '#{owner}' fails this test!"
         end
-
         options.owner = owner
       end
 
