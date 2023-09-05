@@ -214,4 +214,4 @@ Files are stored in the format `sha_[SHA]_analysis_[ID].sarif`
 ### Long term (v3)
 
 - [ ] Interactivity to filter, choose and download multiple reports within one execution of the tool
-- [ ] Convert ot a `gh` cli tool extension
+- [ ] Convert to a `gh` cli tool extension
