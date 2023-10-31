@@ -2,5 +2,5 @@
 
 source 'https://rubygems.org'
 
-gem 'octokit', '~> 7.0'
+gem 'octokit', '~> 8.0'
 gem 'terminal-table'
